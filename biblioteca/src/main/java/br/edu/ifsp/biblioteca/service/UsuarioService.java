@@ -33,11 +33,32 @@ public class UsuarioService {
     
 
     public Usuario criarUsuario(String nomeUsuario, String cpf, String email, Integer categoriaId, Integer cursoId) {
+    	if (nomeUsuario == null || nomeUsuario.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome do usuário é obrigatório");
+        }
+        if (cpf == null || cpf.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF é obrigatório");
+        }
+        if (email == null || email.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail é obrigatório");
+        }
+        if (categoriaId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria é obrigatória");
+        }
+        if (cursoId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Curso é obrigatório");
+        }
+        
         validarCpfFormato(cpf);
         validarSequenciaCpf(cpf);
+        validarEmail(email);
 
         if (usuarioRepository.existsByCpf(cpf)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
+        }
+        
+        if (usuarioRepository.existsByEmail(email) ) {
+        	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "E-mail já cadastrado");
         }
 
         CategoriaUsuario categoriaUsuario = categoriaRepository.findById(categoriaId).orElse(null);
@@ -49,10 +70,6 @@ public class UsuarioService {
         if (curso == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado");
         }
-        
-        
-        // TODO: validar outros pontos aqui
-        
         
         Usuario novoUsuario = new Usuario();
         novoUsuario.setNomeUsuario(nomeUsuario);
@@ -110,6 +127,11 @@ public class UsuarioService {
         }
     }
 
+    private void validarEmail(String email) {
+        if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail inválido");
+        }
+    }
     
     public List<Usuario>listarUsuarios(){
 		return usuarioRepository.findAll();
@@ -132,13 +154,13 @@ public class UsuarioService {
         }
 
         if (novoEmail != null && !novoEmail.isBlank()) {
+            validarEmail(novoEmail);
         	usuarioAtual.setEmail(novoEmail.trim());
         }
 
         if (novoCpf != null && !novoCpf.isBlank()) {
-            if (!novoCpf.matches("\\d{11}")) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF deve conter 11 dígitos numéricos.");
-            }
+        	validarCpfFormato(novoCpf);
+            validarSequenciaCpf(novoCpf);
             usuarioAtual.setCpf(novoCpf);
         }
 

@@ -12,6 +12,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     boolean existsByCpfAndIdUsuarioNot(String cpf, Integer idUsuario);
     boolean existsByEmailAndIdUsuarioNot(String email, Integer idUsuario);
     boolean existsByCpf(String cpf);
+    boolean existsByEmail(String email);
     void deleteByCpf(String cpf);
     
 }
