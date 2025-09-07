@@ -1,9 +1,13 @@
 // br.edu.ifsp.biblioteca.controller.UsuarioController
 package br.edu.ifsp.biblioteca.controller;
 
+import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.model.Usuario;
 import br.edu.ifsp.biblioteca.service.UsuarioService;
 import jakarta.validation.Valid;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,10 +33,20 @@ public class UsuarioController {
     ) {}
 
     @PostMapping
-    public ResponseEntity<Usuario> criar(@Valid @RequestBody UsuarioCreateDTO in) {
-        Usuario salvo = usuarioService.criarUsuario(in.nomeUsuario(), in.cpf(), in.email(), in.categoriaId(), in.cursoId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
+    public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody UsuarioCreateDTO in) {
+        Usuario usuarioCriado = usuarioService.criarUsuario(in.nomeUsuario(), in.cpf(), in.email(), in.categoriaId(), in.cursoId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCriado);
     }
     
+    @GetMapping
+	public ResponseEntity<List<Usuario>> exibirUsuarios(){
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.listarUsuarios());
+	}
+    
+    @GetMapping(value = "/{cpf}")
+	public ResponseEntity<Usuario> exibirUsuarioPorCpf(@PathVariable String cpf){
+		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.procurarPorCpf(cpf));
+	}
+
     
 }
