@@ -18,37 +18,51 @@ import org.springframework.web.server.ResponseStatusException;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioReporitory;
-    private final CategoriaUsuarioRepository categoriaReporitory;
-    private final CursoRepository cursoReporitory;
+    private final CategoriaUsuarioRepository categoriaRepository;
+    private final CursoRepository cursoRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioRepository categoriaRepository, CursoRepository cursoReporitory) {
+    
+    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioRepository categoriaRepository, CursoRepository cursoRepository) {
         this.usuarioReporitory = usuarioRepository;
-        this.categoriaReporitory = categoriaRepository;
-        this.cursoReporitory = cursoReporitory;
+        this.categoriaRepository = categoriaRepository;
+        this.cursoRepository = cursoRepository;
     }
+    
 
-    public Usuario criar(String nomeUsuario, String cpf, String email, Integer categoriaId, Integer cursoId) {
+    public Usuario criarUsuario(String nomeUsuario, String cpf, String email, Integer categoriaId, Integer cursoId) {
         validarCpfFormato(cpf);
 
         if (usuarioReporitory.existsByCpf(cpf)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
         }
 
-        CategoriaUsuario cat = categoriaReporitory.findById(categoriaId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada"));
+        CategoriaUsuario categoriaUsuario = categoriaRepository.findById(categoriaId).orElse(null);
+        if (categoriaUsuario == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada");
+        }
 
-        Curso curso = cursoReporitory.findById(cursoId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado"));
+        Curso curso = cursoRepository.findById(cursoId).orElse(null);
+        if (curso == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado");
+        }
+        
+        
+        // TODO: validar outros pontos aqui
+        
+        
+        Usuario novoUsuario = new Usuario();
+        novoUsuario.setNomeUsuario(nomeUsuario);
+        novoUsuario.setCpf(cpf);
+        novoUsuario.setEmail(email);
+        novoUsuario.setCategoria(categoriaUsuario);
+        novoUsuario.setCurso(curso);
+        novoUsuario.setStatus(StatusUsuario.ATIVO); // por padrão
 
-        Usuario u = new Usuario();
-        u.setNomeUsuario(nomeUsuario);
-        u.setCpf(cpf);
-        u.setEmail(email);
-        u.setCategoria(cat);
-        u.setCurso(curso);
-        u.setStatus(StatusUsuario.ATIVO); // por padrão
-
-        return usuarioReporitory.save(u);
+        // o método 'save' vem do JpaRepository - ele em si já tem o CRUD
+        return usuarioReporitory.save(novoUsuario);
     }
 
+    // TODO: implementar o resto da validação do CPF
     private void validarCpfFormato(String cpf) {
         if (cpf == null || !cpf.matches("\\d{11}")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF deve conter 11 dígitos numéricos");
