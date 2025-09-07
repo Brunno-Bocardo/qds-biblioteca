@@ -34,6 +34,7 @@ public class UsuarioService {
 
     public Usuario criarUsuario(String nomeUsuario, String cpf, String email, Integer categoriaId, Integer cursoId) {
         validarCpfFormato(cpf);
+        validarSequenciaCpf(cpf);
 
         if (usuarioRepository.existsByCpf(cpf)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
@@ -59,18 +60,56 @@ public class UsuarioService {
         novoUsuario.setEmail(email);
         novoUsuario.setCategoria(categoriaUsuario);
         novoUsuario.setCurso(curso);
-        novoUsuario.setStatus(StatusUsuario.ATIVO); // por padrão
+        novoUsuario.setStatus(StatusUsuario.ATIVO);
 
-        // o método 'save' vem do JpaRepository - ele em si já tem o CRUD
         return usuarioRepository.save(novoUsuario);
     }
 
-    // TODO: implementar o resto da validação do CPF
     private void validarCpfFormato(String cpf) {
-        if (cpf == null || !cpf.matches("\\d{11}")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF deve conter 11 dígitos numéricos");
+        if (cpf == null || !cpf.matches("^(?!([0-9])\\1{10})\\d{11}$")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF inválido. Ele deve conter 11 dígitos e não pode ser uma repetição.");
         }
     }
+    
+    private void validarSequenciaCpf(String cpf) {
+        int somaDigitos = 0;
+        int restoSoma = 0;
+        int verificador = 0;
+        
+        // -------- Primeiro Dígito --------
+        for (int i = 0, peso = 10; i < 9; i++, peso--) {
+            somaDigitos += (cpf.charAt(i) - '0') * peso;
+        }
+        
+        restoSoma = somaDigitos % 11;
+        if (restoSoma < 2) {
+            verificador = 0;
+        } else {
+            verificador = (11 - restoSoma);
+        }
+        
+        if (verificador != (cpf.charAt(9) - '0')) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF inválido");
+        }
+        
+        // -------- Segundo Dígito --------
+        somaDigitos = 0;
+        for (int i = 0, peso = 11; i < 10; i++, peso--) {
+            somaDigitos += (cpf.charAt(i) - '0') * peso;
+        }
+        
+        restoSoma = somaDigitos % 11;
+        if (restoSoma < 2) {
+            verificador = 0;
+        } else {
+            verificador = (11 - restoSoma);
+        }
+        
+        if (verificador != (cpf.charAt(10) - '0')) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF inválido");
+        }
+    }
+
     
     public List<Usuario>listarUsuarios(){
 		return usuarioRepository.findAll();
@@ -139,14 +178,8 @@ public class UsuarioService {
     
     @Transactional
     public Usuario alterarStatusUsuario(Integer idUsuario, Usuario.StatusUsuario novoStatus) {
-        Usuario usuario = usuarioRepository.findById(idUsuario)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Usuário não encontrado"));
-
-        // 2) atualiza o status
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado."));
         usuario.setStatus(novoStatus);
-
-        // 3) salva no banco
         return usuarioRepository.save(usuario);
     }
 
