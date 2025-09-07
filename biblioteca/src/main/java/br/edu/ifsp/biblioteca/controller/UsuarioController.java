@@ -7,6 +7,7 @@ import br.edu.ifsp.biblioteca.service.UsuarioService;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,5 +54,12 @@ public class UsuarioController {
     	Usuario usuarioAtualizado = usuarioService.atualizarUsuario(cpf, usuario);
 	    return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizado);
 	}
+    
+    @DeleteMapping("/{cpf}")
+    public ResponseEntity<Map<String, String>> deletarUsuario(@PathVariable String cpf) {
+        usuarioService.deletarUsuario(cpf);
+        Map<String, String> resposta = Map.of("message", "Usuário deletado!");
+        return ResponseEntity.ok(resposta);
+    }
     
 }

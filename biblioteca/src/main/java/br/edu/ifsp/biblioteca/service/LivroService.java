@@ -68,7 +68,7 @@ public class LivroService {
 	
 	@Transactional
 	public void deletar(String isbn) {
-		//precisa verrificar se há emprestimos do livro.
+		// TODO: precisa verrificar se há emprestimos do livro.
 		procurarPorIsbn(isbn);
 		livroRepository.deleteByIsbn(isbn);
 	}

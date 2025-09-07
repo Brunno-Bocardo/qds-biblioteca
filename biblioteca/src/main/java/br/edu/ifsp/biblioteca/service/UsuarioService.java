@@ -131,4 +131,10 @@ public class UsuarioService {
             }
         }
     }
+    
+    @Transactional
+	public void deletarUsuario(String cpf) {
+    	procurarPorCpf(cpf);
+    	usuarioRepository.deleteByCpf(cpf);
+	}
 }
