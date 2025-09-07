@@ -39,7 +39,6 @@ management:
   endpoint:
     heapdump:
       enabled: true
-
 app:
   name: "@project.name@"
   version: "@project.version@"
