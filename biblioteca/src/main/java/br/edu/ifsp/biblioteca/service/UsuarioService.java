@@ -136,4 +136,18 @@ public class UsuarioService {
     	procurarPorCpf(cpf);
     	usuarioRepository.deleteByCpf(cpf);
 	}
+    
+    @Transactional
+    public Usuario alterarStatusUsuario(Integer idUsuario, Usuario.StatusUsuario novoStatus) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Usuário não encontrado"));
+
+        // 2) atualiza o status
+        usuario.setStatus(novoStatus);
+
+        // 3) salva no banco
+        return usuarioRepository.save(usuario);
+    }
+
 }
