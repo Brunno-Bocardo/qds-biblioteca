@@ -80,4 +80,55 @@ public class UsuarioService {
     public Usuario procurarPorCpf(String cpf){
 		return usuarioRepository.findByCpf(cpf).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi localizado nenhum usuário com este CPF."));
 	}
+    
+    @Transactional
+    public Usuario atualizarUsuario(String cpf, Usuario novosDadosUsuario) {
+        Usuario usuarioAtual = procurarPorCpf(cpf);
+        String novoCpf   = novosDadosUsuario.getCpf();
+        String novoEmail = novosDadosUsuario.getEmail();
+        
+        validarDadosDuplicados(usuarioAtual.getIdUsuario(), novoCpf, novoEmail);
+
+        if (novosDadosUsuario.getNomeUsuario() != null && !novosDadosUsuario.getNomeUsuario().isBlank()) {
+        	usuarioAtual.setNomeUsuario(novosDadosUsuario.getNomeUsuario());
+        }
+
+        if (novoEmail != null && !novoEmail.isBlank()) {
+        	usuarioAtual.setEmail(novoEmail.trim());
+        }
+
+        if (novoCpf != null && !novoCpf.isBlank()) {
+            if (!novoCpf.matches("\\d{11}")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF deve conter 11 dígitos numéricos.");
+            }
+            usuarioAtual.setCpf(novoCpf);
+        }
+
+        if (novosDadosUsuario.getCategoria() != null && novosDadosUsuario.getCategoria().getIdCategoriaUsuario() > 0) {
+            var categoriaUsuario = categoriaRepository.findById(novosDadosUsuario.getCategoria().getIdCategoriaUsuario())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada."));
+            usuarioAtual.setCategoria(categoriaUsuario);
+        }
+
+        if (novosDadosUsuario.getCurso() != null && novosDadosUsuario.getCurso().getIdCurso() > 0) {
+            var curso = cursoRepository.findById(novosDadosUsuario.getCurso().getIdCurso())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado."));
+            usuarioAtual.setCurso(curso);
+        }
+
+        return usuarioRepository.save(usuarioAtual);
+    }
+
+    public void validarDadosDuplicados(Integer idAtual, String novoCpf, String novoEmail) {
+        if (novoCpf != null && !novoCpf.isBlank()) {
+            if (usuarioRepository.existsByCpfAndIdUsuarioNot(novoCpf, idAtual)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este CPF.");
+            }
+        }
+        if (novoEmail != null && !novoEmail.isBlank()) {
+            if (usuarioRepository.existsByEmailAndIdUsuarioNot(novoEmail.trim(), idAtual)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este e-mail.");
+            }
+        }
+    }
 }
