@@ -3,7 +3,6 @@ package br.edu.ifsp.biblioteca.service;
 
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.model.Curso;
-import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.model.Usuario;
 import br.edu.ifsp.biblioteca.model.Usuario.StatusUsuario;
 import br.edu.ifsp.biblioteca.repository.CategoriaUsuarioRepository;
