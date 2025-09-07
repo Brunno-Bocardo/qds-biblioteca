@@ -36,10 +36,9 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
         }
 
-        CategoriaUsuario categoriaUsuario = categoriaRepository.findById(categoriaId).orElse(null);
-        if (categoriaUsuario == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada");
-        }
+        CategoriaUsuario categoriaUsuario = categoriaRepository.findById(categoriaId)
+        	    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria não encontrada"));
+
 
         Curso curso = cursoRepository.findById(cursoId).orElse(null);
         if (curso == null) {

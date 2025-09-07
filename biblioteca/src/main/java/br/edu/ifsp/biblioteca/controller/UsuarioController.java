@@ -33,4 +33,6 @@ public class UsuarioController {
         Usuario salvo = usuarioService.criarUsuario(in.nomeUsuario(), in.cpf(), in.email(), in.categoriaId(), in.cursoId());
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
+    
+    
 }
