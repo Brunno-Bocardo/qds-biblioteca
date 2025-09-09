@@ -1,7 +1,6 @@
 package br.edu.ifsp.biblioteca.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "estoque")
@@ -9,7 +8,7 @@ public class Estoque {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int idEstoque;
 
     @Column(nullable = false, unique = true)
     private String codigoExemplar;
@@ -23,11 +22,11 @@ public class Estoque {
 
     // Getters e Setters
     public int getId() {
-        return id;
+        return idEstoque;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.idEstoque = id;
     }
 
     public String getCodigoExemplar() {
