@@ -1,9 +1,10 @@
 package br.edu.ifsp.biblioteca.service;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ifsp.biblioteca.model.Estoque;
-import br.edu.ifsp.biblioteca.repository.EmprestimoRepository;
 import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.repository.EstoqueRepository;
 import br.edu.ifsp.biblioteca.repository.LivroRepository;
@@ -37,8 +38,8 @@ public class EstoqueService {
         return estoqueRepository.findAll();
     }
 
-    public Optional<Estoque> buscarPorCodigo(String codigoExemplar) {
-        return estoqueRepository.findByCodigoExemplar(codigoExemplar);
+    public Estoque buscarPorCodigo(String codigoExemplar) {
+        return estoqueRepository.findByCodigoExemplar(codigoExemplar).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi possível localizar exemplar."));
     }
 
     public Estoque atualizarDisponibilidade(String codigoExemplar, boolean disponivel) {

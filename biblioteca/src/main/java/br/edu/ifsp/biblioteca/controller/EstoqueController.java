@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.*;
 
 import br.edu.ifsp.biblioteca.model.Estoque;
 import br.edu.ifsp.biblioteca.service.EstoqueService;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import java.util.*;
 
@@ -32,9 +31,7 @@ public class EstoqueController {
 
     @GetMapping("/{codigoExemplar}")
     public ResponseEntity<Estoque> buscarPorCodigo(@PathVariable String codigoExemplar) {
-        return estoqueService.buscarPorCodigo(codigoExemplar)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(estoqueService.buscarPorCodigo(codigoExemplar));
     }
 
     @PutMapping("/{codigoExemplar}")
