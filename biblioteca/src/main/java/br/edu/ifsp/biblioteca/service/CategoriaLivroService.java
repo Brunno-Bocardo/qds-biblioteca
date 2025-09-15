@@ -30,6 +30,10 @@ public class CategoriaLivroService {
 	public CategoriaLivro consultar(String categoria) {
 		return categoriaLivroRepository.findByNomeCategoriaLivro(categoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"A categoria informada não consta no sistema"));
 	}
+			
+	public CategoriaLivro consultarPorId(Integer categoria) {
+		return categoriaLivroRepository.findById(categoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"A categoria informada não consta no sistema"));
+	}
 	
 	public List<CategoriaLivro> listarTodas() {
         return categoriaLivroRepository.findAll();
