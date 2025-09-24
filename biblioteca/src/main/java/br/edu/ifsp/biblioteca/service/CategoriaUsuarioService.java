@@ -1,0 +1,34 @@
+package br.edu.ifsp.biblioteca.service;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+
+import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
+import br.edu.ifsp.biblioteca.repository.CategoriaUsuarioRepository;
+import jakarta.transaction.Transactional;
+
+@Service
+public class CategoriaUsuarioService {
+	
+	private final CategoriaUsuarioRepository categoriaUsuarioRepository;
+	
+	public CategoriaUsuarioService(CategoriaUsuarioRepository categoriaUsuarioRepository) {
+		this.categoriaUsuarioRepository = categoriaUsuarioRepository;
+	}
+	
+	@Transactional
+	public CategoriaUsuario cadastrarCategoriaUsuario(CategoriaUsuario categoriaUsuario) {
+		if(categoriaUsuarioRepository.existsByNomeCategoriaUsuario(categoriaUsuario.getNomeCategoriaUsuario())) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe uma categoria usuário com este nome");
+		}
+		return categoriaUsuarioRepository.save(categoriaUsuario);
+	}
+	
+	public List<CategoriaUsuario> listarTodas() {
+		return categoriaUsuarioRepository.findAll();
+	}
+
+}

@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 public class CategoriaUsuario {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCategoriaUsuario;
+    private Integer idCategoriaUsuario;
 
     @NotBlank
     private String nomeCategoriaUsuario;
@@ -19,7 +19,14 @@ public class CategoriaUsuario {
     //                   getters e setters
     // ====================================================
     
-    public int getIdCategoriaUsuario() {
+    public CategoriaUsuario() {}
+    
+    public CategoriaUsuario(Integer idCategoriaUsuario, String nome) {
+    	this.idCategoriaUsuario = idCategoriaUsuario;
+		this.nomeCategoriaUsuario = nome;
+	}
+
+	public Integer getIdCategoriaUsuario() {
         return idCategoriaUsuario;
     }
 
@@ -28,7 +35,7 @@ public class CategoriaUsuario {
     }
 
     public String getNomeCategoriaUsuario() {
-        return nomeCategoriaUsuario;
+        return this.nomeCategoriaUsuario;
     }
 
     public void setNomeCategoriaUsuario(String nomeCategoriaUsuario) {

@@ -69,7 +69,6 @@ public class EmprestimoService {
 	}
 	
 	public List<Emprestimo>listarEmprestimos(){
-		// Verificar se apenas os emprestimos ativos devem ser retornados 
 		return emprestimoRepository.findAll();
 	}
 	
