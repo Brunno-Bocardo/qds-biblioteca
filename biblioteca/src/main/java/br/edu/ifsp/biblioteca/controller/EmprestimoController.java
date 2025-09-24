@@ -13,7 +13,7 @@ import br.edu.ifsp.biblioteca.service.EmprestimoService;
 
 @RestController
 @Validated
-@RequestMapping("/api/emprestimo")
+@RequestMapping("/library/emprestimo")
 
 public class EmprestimoController {
 	
