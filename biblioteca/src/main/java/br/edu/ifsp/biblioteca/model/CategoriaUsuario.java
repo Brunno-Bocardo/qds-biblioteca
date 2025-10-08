@@ -15,16 +15,17 @@ public class CategoriaUsuario {
     @NotBlank
     private String nomeCategoriaUsuario;
     
+    public CategoriaUsuario() {}
+    
+    public CategoriaUsuario(Integer idCategoriaUsuario, String nomeCategoriaUsuario) {
+    	this.idCategoriaUsuario = idCategoriaUsuario;
+		this.nomeCategoriaUsuario = nomeCategoriaUsuario;
+	}
+    
     // ====================================================
     //                   getters e setters
     // ====================================================
     
-    public CategoriaUsuario() {}
-    
-    public CategoriaUsuario(Integer idCategoriaUsuario, String nome) {
-    	this.idCategoriaUsuario = idCategoriaUsuario;
-		this.nomeCategoriaUsuario = nome;
-	}
 
 	public Integer getIdCategoriaUsuario() {
         return idCategoriaUsuario;
