@@ -6,7 +6,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ifsp.biblioteca.model.CategoriaLivro;
 import br.edu.ifsp.biblioteca.model.Livro;
-import br.edu.ifsp.biblioteca.service.CategoriaLivroService;
 import br.edu.ifsp.biblioteca.repository.LivroRepository;
 import jakarta.transaction.Transactional;
 
@@ -24,7 +23,7 @@ public class LivroService {
     }
 
 	@Transactional
-	public Livro cadastrar(String isbn, String titulo, String autor, String editora, String edicao, Integer categoriaId) {		
+	public Livro cadastrarLivro(String isbn, String titulo, String autor, String editora, String edicao, Integer categoriaId) {		
 		
 		if(isbn == null || isbn.isBlank()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O ISBN é obrigatório");
@@ -67,7 +66,7 @@ public class LivroService {
 	}
 	
 	@Transactional
-	public Livro atualizar(String isbn, Livro livroAtualizado){
+	public Livro atualizarLivro(String isbn, Livro livroAtualizado){
 		Livro livro = procurarPorIsbn(isbn);
 		
 		if(livroRepository.existsByAutorAndEditoraAndEdicao(livroAtualizado.getAutor(), livroAtualizado.getEditora(), livroAtualizado.getEdicao())) {

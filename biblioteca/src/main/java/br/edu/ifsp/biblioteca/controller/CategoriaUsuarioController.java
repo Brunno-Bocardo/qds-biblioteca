@@ -1,6 +1,7 @@
 package br.edu.ifsp.biblioteca.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,36 +11,45 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.edu.ifsp.biblioteca.dto.CategoriaUsuarioDto;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
-import br.edu.ifsp.biblioteca.model.CategoriaUsuarioDto;
 import br.edu.ifsp.biblioteca.service.CategoriaUsuarioService;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/library/catalogos/categorias-usuario")
 public class CategoriaUsuarioController {
-	
+
 	private final CategoriaUsuarioService categoriaUsuarioService;
-	
+
 	public CategoriaUsuarioController(CategoriaUsuarioService categoriaUsuarioService) {
 		this.categoriaUsuarioService = categoriaUsuarioService;
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<CategoriaUsuario> criarCategoriaUsuario(CategoriaUsuarioDto categoriaDto) {
-		CategoriaUsuario novaCategoria = new CategoriaUsuario(null, categoriaDto.getNome());
-		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaUsuarioService.cadastrarCategoriaUsuario(novaCategoria));
+	public ResponseEntity<CategoriaUsuarioDto> criarCategoriaUsuario(String nome) {
+		CategoriaUsuario novaCategoria = new CategoriaUsuario(null, nome);
+		CategoriaUsuario categoriaSalva = categoriaUsuarioService.cadastrarCategoriaUsuario(novaCategoria);
+		CategoriaUsuarioDto respostaDto = new CategoriaUsuarioDto(categoriaSalva.getIdCategoriaUsuario(),
+				categoriaSalva.getNomeCategoriaUsuario());
+		return ResponseEntity.status(HttpStatus.CREATED).body(respostaDto);
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<CategoriaUsuario>> listarTodos() {
+	public ResponseEntity<List<CategoriaUsuarioDto>> listarTodos() {
 		List<CategoriaUsuario> categorias = categoriaUsuarioService.listarTodas();
-		return ResponseEntity.status(HttpStatus.OK).body(categorias);
+		List<CategoriaUsuarioDto> categoriasDto = categorias.stream()
+				.map(categoria -> new CategoriaUsuarioDto(categoria.getIdCategoriaUsuario(),
+						categoria.getNomeCategoriaUsuario()))
+				.collect(Collectors.toList());
+		return ResponseEntity.status(HttpStatus.OK).body(categoriasDto);
 	}
+
 	@GetMapping("/{nome}")
-    public ResponseEntity<CategoriaUsuario> consultarPorNome(@PathVariable String nome) {
-        return ResponseEntity.status(HttpStatus.OK).body(categoriaUsuarioService.consultar(nome));
-    }
+	public ResponseEntity<CategoriaUsuarioDto> consultarPorNome(@PathVariable String nome) {
+		CategoriaUsuario categoriaEncontrada = categoriaUsuarioService.consultar(nome);
+		CategoriaUsuarioDto categoriaDto = new CategoriaUsuarioDto(categoriaEncontrada.getIdCategoriaUsuario(),
+				categoriaEncontrada.getNomeCategoriaUsuario());
+		return ResponseEntity.status(HttpStatus.OK).body(categoriaDto);
+	}
 }

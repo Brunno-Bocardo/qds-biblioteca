@@ -1,18 +1,31 @@
-package br.edu.ifsp.biblioteca.model;
+package br.edu.ifsp.biblioteca.dto;
 
 public class CategoriaUsuarioDto {
-	private String nome;
-	
-	public CategoriaUsuarioDto(String nome) {
-		this.nome = nome;
+	private Integer idCategoriaUsuario;
+    private String nomeCategoriaUsuario;
+
+    public CategoriaUsuarioDto( Integer idCategoriaUsuario, String nomeCategoriaUsuario) {
+    	this.idCategoriaUsuario = idCategoriaUsuario;
+    	this.nomeCategoriaUsuario = nomeCategoriaUsuario;  
+    }
+
+    public CategoriaUsuarioDto() {
+    };
+
+    public Integer getIdCategoriaUsuario() {
+		return idCategoriaUsuario;
 	}
 
-	public String getNome() {
-		return nome;
+	public void setIdCategoriaUsuario(Integer idCategoriaUsuario) {
+		this.idCategoriaUsuario = idCategoriaUsuario;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	
+	public String getNomeCategoriaUsuarioo() {
+        return nomeCategoriaUsuario;
+    }
+
+    public void setNomeCategoriaUsuario(String nomeCategoriaUsuario) {
+        this.nomeCategoriaUsuario = nomeCategoriaUsuario;
+    }
+
 }
