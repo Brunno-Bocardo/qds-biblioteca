@@ -1,34 +1,18 @@
 package br.edu.ifsp.biblioteca.dto;
 
-import br.edu.ifsp.biblioteca.model.CategoriaLivro;
-
-public class LivroDto {
-	private String isbn;
+public class LivroUpdateDto {
 	private String titulo;
 	private String autor;
 	private String editora;
 	private String edicao;
-	private CategoriaLivro categoria;
+	private Integer categoriaId;
 	
-	public LivroDto() {
-		
-	}
-	
-	public LivroDto(String isbn, String titulo, String autor, String editora, String edicao, CategoriaLivro categoria) {
-		this.isbn = isbn;
+	LivroUpdateDto(String titulo, String autor, String editora, String edicao, Integer categoriaId) {
 		this.titulo = titulo;
 		this.autor = autor;
 		this.editora = editora;
 		this.edicao = edicao;
-		this.categoria = categoria;
-	}
-
-	public String getIsbn() {
-		return isbn;
-	}
-
-	public void setIsbn(String isbn) {
-		this.isbn = isbn;
+		this.categoriaId = categoriaId;
 	}
 
 	public String getTitulo() {
@@ -63,12 +47,11 @@ public class LivroDto {
 		this.edicao = edicao;
 	}
 
-	public CategoriaLivro getCategoria() {
-		return categoria;
+	public Integer getCategoriaId() {
+		return categoriaId;
 	}
 
-	public void setCategoria(CategoriaLivro categoria) {
-		this.categoria = categoria;
+	public void setCategoriaId(Integer categoriaId) {
+		this.categoriaId = categoriaId;
 	}
-	
 }

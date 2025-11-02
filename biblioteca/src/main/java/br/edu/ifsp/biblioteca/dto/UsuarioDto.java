@@ -2,7 +2,6 @@ package br.edu.ifsp.biblioteca.dto;
 
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.model.Curso;
-import br.edu.ifsp.biblioteca.model.Usuario.StatusUsuario;
 
 public class UsuarioDto {
 	private int idUsuario;

@@ -1,6 +1,6 @@
-// br.edu.ifsp.biblioteca.service.UsuarioService
 package br.edu.ifsp.biblioteca.service;
 
+import br.edu.ifsp.biblioteca.dto.UsuarioCreateDto;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.model.Curso;
 import br.edu.ifsp.biblioteca.model.Usuario;
@@ -32,49 +32,50 @@ public class UsuarioService {
     }
     
 
-    public Usuario criarUsuario(String nomeUsuario, String cpf, String email, Integer categoriaId, Integer cursoId) {
-    	if (nomeUsuario == null || nomeUsuario.isBlank()) {
+    public Usuario criarUsuario(UsuarioCreateDto usuario) {
+    	
+    	if (usuario.getNome() == null || usuario.getNome().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome do usuário é obrigatório");
         }
-        if (cpf == null || cpf.isBlank()) {
+        if (usuario.getCpf() == null || usuario.getCpf().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF é obrigatório");
         }
-        if (email == null || email.isBlank()) {
+        if (usuario.getEmail() == null || usuario.getEmail().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail é obrigatório");
         }
-        if (categoriaId == null) {
+        if (usuario.getCategoriaId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria é obrigatória");
         }
-        if (cursoId == null) {
+        if (usuario.getCursoId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Curso é obrigatório");
         }
         
-        validarCpfFormato(cpf);
-        validarSequenciaCpf(cpf);
-        validarEmail(email);
+        validarCpfFormato(usuario.getCpf());
+        validarSequenciaCpf(usuario.getCpf());
+        validarEmail(usuario.getEmail());
 
-        if (usuarioRepository.existsByCpf(cpf)) {
+        if (usuarioRepository.existsByCpf(usuario.getCpf())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
         }
         
-        if (usuarioRepository.existsByEmail(email) ) {
+        if (usuarioRepository.existsByEmail(usuario.getEmail()) ) {
         	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "E-mail já cadastrado");
         }
 
-        CategoriaUsuario categoriaUsuario = categoriaRepository.findById(categoriaId).orElse(null);
+        CategoriaUsuario categoriaUsuario = categoriaRepository.findById(usuario.getCategoriaId()).orElse(null);
         if (categoriaUsuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada");
         }
 
-        Curso curso = cursoRepository.findById(cursoId).orElse(null);
+        Curso curso = cursoRepository.findById(usuario.getCursoId()).orElse(null);
         if (curso == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado");
         }
         
         Usuario novoUsuario = new Usuario();
-        novoUsuario.setNomeUsuario(nomeUsuario);
-        novoUsuario.setCpf(cpf);
-        novoUsuario.setEmail(email);
+        novoUsuario.setNomeUsuario(usuario.getNome());
+        novoUsuario.setCpf(usuario.getCpf());
+        novoUsuario.setEmail(usuario.getEmail());
         novoUsuario.setCategoria(categoriaUsuario);
         novoUsuario.setCurso(curso);
         novoUsuario.setStatus(StatusUsuario.ATIVO);

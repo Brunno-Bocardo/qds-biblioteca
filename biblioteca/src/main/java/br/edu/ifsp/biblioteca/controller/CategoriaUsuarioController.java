@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ifsp.biblioteca.dto.CategoriaUsuarioDto;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.service.CategoriaUsuarioService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/library/catalogos/categorias-usuario")

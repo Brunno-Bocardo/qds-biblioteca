@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import br.edu.ifsp.biblioteca.dto.EmprestimoCreateDto;
 import br.edu.ifsp.biblioteca.model.Emprestimo;
 import br.edu.ifsp.biblioteca.service.EmprestimoService;
 
@@ -23,14 +24,9 @@ public class EmprestimoController {
 		this.emprestimoService = serviceEmprestimo;
 	}
 	
-	public record EmprestimoCreateDTO(
-			 String cpf,
-			 String codigoExemplar
-	) {}
-	
 	@PostMapping
-	public ResponseEntity<Emprestimo> registrarEmprestimo(@RequestBody EmprestimoCreateDTO emprestimo) {
-		Emprestimo emprestimoCriado = emprestimoService.registrarEmprestimo(emprestimo.cpf(), emprestimo.codigoExemplar());
+	public ResponseEntity<Emprestimo> registrarEmprestimo(@RequestBody EmprestimoCreateDto emprestimo) {
+		Emprestimo emprestimoCriado = emprestimoService.registrarEmprestimo(emprestimo.getCpf(), emprestimo.getCodigoExemplar());
 		return ResponseEntity.status(HttpStatus.OK).body(emprestimoCriado);
 	}
 	

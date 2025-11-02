@@ -1,33 +1,29 @@
 package br.edu.ifsp.biblioteca.dto;
 
 public class CursoDto {
-	private int idCurso;
-    private String nomeCurso;
+	private int id;
+    private String nome;
     		
-	public CursoDto(int idCurso, String nomeCurso) {
-		this.idCurso = idCurso;
-		this.nomeCurso = nomeCurso;
+	public CursoDto(int id, String nome) {
+		this.id = id;
+		this.nome = nome;
 	}
 	
 	public CursoDto() {}
 	
-	public int getIdCurso() {
-		return idCurso;
+	public int getId() {
+		return id;
 	}
 
-	public void setIdCurso(int idCurso) {
-		this.idCurso = idCurso;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public String getNomeCurso() {
-		return nomeCurso;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setNomeCurso(String nomeCurso) {
-		this.nomeCurso = nomeCurso;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
-	
-	
-    
-    
 }

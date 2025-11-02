@@ -1,6 +1,6 @@
-// br.edu.ifsp.biblioteca.controller.UsuarioController
 package br.edu.ifsp.biblioteca.controller;
 
+import br.edu.ifsp.biblioteca.dto.UsuarioCreateDto;
 import br.edu.ifsp.biblioteca.model.Usuario;
 import br.edu.ifsp.biblioteca.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -24,17 +24,9 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    public record UsuarioCreateDTO(
-            String nomeUsuario,
-            String cpf,
-            String email,
-            Integer categoriaId,
-            Integer cursoId
-    ) {}
-
     @PostMapping
-    public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody UsuarioCreateDTO usuario) {
-        Usuario usuarioCriado = usuarioService.criarUsuario(usuario.nomeUsuario(), usuario.cpf(), usuario.email(), usuario.categoriaId(), usuario.cursoId());
+    public ResponseEntity<Usuario> criarUsuario(@Valid @RequestBody UsuarioCreateDto usuario) {
+        Usuario usuarioCriado = usuarioService.criarUsuario(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioCriado);
     }
     

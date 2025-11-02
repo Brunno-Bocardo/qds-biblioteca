@@ -10,8 +10,6 @@ public class EstoqueDto {
 	
 	public EstoqueDto() {}
 	
-	
-	
 	public EstoqueDto(int idEstoque, String codigoExemplar, Livro livro, boolean disponivel) {
 		this.idEstoque = idEstoque;
 		this.codigoExemplar = codigoExemplar;
