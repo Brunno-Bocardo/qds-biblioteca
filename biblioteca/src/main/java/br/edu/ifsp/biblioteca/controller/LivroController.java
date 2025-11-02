@@ -7,11 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import br.edu.ifsp.biblioteca.dto.LivroCreateDto;
+import br.edu.ifsp.biblioteca.dto.LivroUpdateDto;
 import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.service.LivroService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 
 
@@ -26,36 +26,11 @@ public class LivroController {
 		this.service = service;
 	}
 	
-	public record LivroCreateDTO(
-			@NotBlank String isbn,
-			@NotBlank String titulo,
-			@NotBlank String autor,
-			@NotBlank String editora,
-			@NotBlank String edicao,
-			@NotNull(message = "O ID da categoria é obrigatório.") Integer categoriaId
-	) {}
-	
-	public record LivroUpdateDTO(
-			@NotBlank String titulo,
-			@NotBlank String autor,
-			@NotBlank String editora,
-			@NotBlank String edicao,
-			@NotNull(message = "O ID da categoria é obrigatório.") Integer categoriaId
-	) {}
-	
 	@PostMapping
-	public ResponseEntity<Livro> criar(@Valid @RequestBody LivroCreateDTO livroDto ){
-		Livro livroSalvo = service.cadastrar(
-				livroDto.isbn(), 
-				livroDto.titulo(),
-				livroDto.autor(), 
-				livroDto.editora(), 
-				livroDto.edicao(), 
-				livroDto.categoriaId()
-			);
+	public ResponseEntity<Livro> criar(@Valid @RequestBody LivroCreateDto livroDto ){
+		Livro livroSalvo = service.cadastrarLivro(livroDto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(livroSalvo);
-	
-}
+	}
 
 	@GetMapping(value = "/{isbn}")
 	public ResponseEntity<Livro> buscarPorIsbn(@PathVariable String isbn){
@@ -68,8 +43,8 @@ public class LivroController {
 	}
 
 	@PutMapping(value = "/{isbn}")
-	public ResponseEntity<Livro> atualizar(@PathVariable String isbn, @RequestBody Livro livro){
-	    Livro livroAtualizado = service.atualizar(isbn, livro);
+	public ResponseEntity<Livro> atualizar(@PathVariable String isbn, @RequestBody LivroUpdateDto livro){
+	    Livro livroAtualizado = service.atualizarLivro(isbn, livro);
 	    return ResponseEntity.status(HttpStatus.OK).body(livroAtualizado);
 	}
 	

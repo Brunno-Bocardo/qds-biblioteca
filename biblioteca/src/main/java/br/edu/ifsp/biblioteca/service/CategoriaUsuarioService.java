@@ -15,8 +15,8 @@ public class CategoriaUsuarioService {
 	
 	private final CategoriaUsuarioRepository categoriaUsuarioRepository;
 	
-	public CategoriaUsuarioService(CategoriaUsuarioRepository categoriaUsuarioRepository) {
-		this.categoriaUsuarioRepository = categoriaUsuarioRepository;
+	public CategoriaUsuarioService(CategoriaUsuarioRepository categoriaRepository) {
+		this.categoriaUsuarioRepository = categoriaRepository;
 	}
 	
 	@Transactional
@@ -26,7 +26,9 @@ public class CategoriaUsuarioService {
 		}
 		return categoriaUsuarioRepository.save(categoriaUsuario);
 	}
-	
+	public CategoriaUsuario consultar(String categoria) {
+		return categoriaUsuarioRepository.findByNomeCategoriaUsuario(categoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "A categoria informada não consta no sistema"));
+	}
 	public List<CategoriaUsuario> listarTodas() {
 		return categoriaUsuarioRepository.findAll();
 	}

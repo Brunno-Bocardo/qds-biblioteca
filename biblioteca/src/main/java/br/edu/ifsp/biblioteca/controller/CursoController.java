@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import br.edu.ifsp.biblioteca.dto.CursoCreateDto;
 import br.edu.ifsp.biblioteca.model.Curso;
 import br.edu.ifsp.biblioteca.service.CursoService;
 import jakarta.validation.Valid;
@@ -27,13 +29,9 @@ public class CursoController {
 		this.cursoService = cursoService;
 	}
 	
-	public record CursoCreateDTO(
-            String nomeCurso
-    ) {}
-	
 	@PostMapping
-    public ResponseEntity<Curso> criarCurso(@Valid @RequestBody CursoCreateDTO curso) {
-		Curso cursoCriado = cursoService.criarCurso(curso.nomeCurso());
+    public ResponseEntity<Curso> criarCurso(@Valid @RequestBody CursoCreateDto curso) {
+		Curso cursoCriado = cursoService.criarCurso(curso.getNome());
         return ResponseEntity.status(HttpStatus.CREATED).body(cursoCriado);
     }
 	
@@ -48,8 +46,8 @@ public class CursoController {
 	}
 	
 	@PutMapping("/{idCurso}")
-	public ResponseEntity<Curso> atualizarCurso(@PathVariable Integer idCurso, @RequestBody CursoCreateDTO body) {
-	    Curso cursoAtualizado = cursoService.atualizarCursoPorId(idCurso, body.nomeCurso());
+	public ResponseEntity<Curso> atualizarCurso(@PathVariable Integer idCurso, @RequestBody CursoCreateDto curso) {
+	    Curso cursoAtualizado = cursoService.atualizarCursoPorId(idCurso, curso.getNome());
 	    return ResponseEntity.ok(cursoAtualizado);
 	}
     

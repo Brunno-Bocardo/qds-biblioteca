@@ -5,11 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import br.edu.ifsp.biblioteca.dto.EstoqueCreateDto;
+import br.edu.ifsp.biblioteca.dto.EstoqueDisponibilidadeDto;
 import br.edu.ifsp.biblioteca.model.Estoque;
 import br.edu.ifsp.biblioteca.service.EstoqueService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -24,20 +24,9 @@ public class EstoqueController {
         this.estoqueService = estoqueService;
     }
 
-    // DTO para criação de exemplar
-    public record EstoqueCreateDTO(
-            @NotBlank String isbn,
-            @NotBlank String codigoExemplar
-    ) {}
-
-    // DTO para atualização de disponibilidade
-    public record EstoqueDisponibilidadeDTO(
-            @NotNull Boolean disponivel
-    ) {}
-
     @PostMapping
-    public ResponseEntity<Estoque> cadastrarExemplar(@Valid @RequestBody EstoqueCreateDTO dto) {
-        Estoque estoque = estoqueService.cadastrarExemplar(dto.isbn(), dto.codigoExemplar());
+    public ResponseEntity<Estoque> cadastrarExemplar(@Valid @RequestBody EstoqueCreateDto createDto) {
+        Estoque estoque = estoqueService.cadastrarExemplar(createDto.getIsbn(), createDto.getCodigoExemplar());
         return ResponseEntity.status(HttpStatus.CREATED).body(estoque);
     }
 
@@ -54,9 +43,9 @@ public class EstoqueController {
     @PutMapping("/{codigoExemplar}")
     public ResponseEntity<Estoque> atualizarDisponibilidade(
             @PathVariable String codigoExemplar,
-            @Valid @RequestBody EstoqueDisponibilidadeDTO dto
+            @Valid @RequestBody EstoqueDisponibilidadeDto disponibilidadeDto
     ) {
-        Estoque atualizado = estoqueService.atualizarDisponibilidade(codigoExemplar, dto.disponivel());
+        Estoque atualizado = estoqueService.atualizarDisponibilidade(codigoExemplar, disponibilidadeDto.getDisponivel());
         return ResponseEntity.ok(atualizado);
     }
 
