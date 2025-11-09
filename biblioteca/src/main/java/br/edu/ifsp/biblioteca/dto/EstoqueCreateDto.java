@@ -1,12 +1,13 @@
 package br.edu.ifsp.biblioteca.dto;
 
-public class EstoqueCreateDto {
+public class EstoqueCreateDto extends EstoqueBaseDto {
 	private String isbn;
-	private String codigoExemplar;
+	
+	public EstoqueCreateDto() {}
 	
 	public EstoqueCreateDto(String isbn, String codigoExemplar) {
+		super(codigoExemplar);
 		this.isbn = isbn;
-		this.codigoExemplar = codigoExemplar;
 	}
 
 	public String getIsbn() {
@@ -16,14 +17,4 @@ public class EstoqueCreateDto {
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
 	}
-
-	public String getCodigoExemplar() {
-		return codigoExemplar;
-	}
-
-	public void setCodigoExemplar(String codigoExemplar) {
-		this.codigoExemplar = codigoExemplar;
-	}
-	
-	
 }

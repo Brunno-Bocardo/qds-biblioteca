@@ -26,7 +26,7 @@ public class EmprestimoController {
 	
 	@PostMapping
 	public ResponseEntity<Emprestimo> registrarEmprestimo(@RequestBody EmprestimoCreateDto emprestimo) {
-		Emprestimo emprestimoCriado = emprestimoService.registrarEmprestimo(emprestimo.getCpf(), emprestimo.getCodigoExemplar());
+		Emprestimo emprestimoCriado = emprestimoService.registrarEmprestimo(emprestimo);
 		return ResponseEntity.status(HttpStatus.OK).body(emprestimoCriado);
 	}
 	

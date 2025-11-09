@@ -3,6 +3,8 @@ package br.edu.ifsp.biblioteca.dto;
 public class CursoCreateDto {
 	private String nome;
 	
+	public CursoCreateDto() {}
+	
 	public CursoCreateDto(String nome) {
 		this.nome = nome;
 	}

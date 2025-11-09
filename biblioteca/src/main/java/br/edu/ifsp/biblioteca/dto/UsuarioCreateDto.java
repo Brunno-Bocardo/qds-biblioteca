@@ -1,42 +1,17 @@
 package br.edu.ifsp.biblioteca.dto;
 
-public class UsuarioCreateDto {
-	private String nome;
-	private String cpf;
-	private String email;
+public class UsuarioCreateDto extends UsuarioBaseDto {
 	private Integer categoriaId;
 	private Integer cursoId;
 	
+	public UsuarioCreateDto() {
+		super();
+	}
+
 	public UsuarioCreateDto(String nome, String cpf, String email, Integer categoriaId, Integer cursoId) {
-		this.nome = nome;
-		this.cpf = cpf;
-		this.email = email;
+		super(nome, cpf, email);
 		this.categoriaId = categoriaId;
 		this.cursoId = cursoId;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public Integer getCategoriaId() {
@@ -53,7 +28,5 @@ public class UsuarioCreateDto {
 
 	public void setCursoId(Integer cursoId) {
 		this.cursoId = cursoId;
-	}
-	
-	
+	}	
 }
