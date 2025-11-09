@@ -1,15 +1,16 @@
 package br.edu.ifsp.biblioteca.dto;
 
-public class CursoDto {
+public class CursoDto extends CursoCreateDto {
 	private int id;
-    private String nome;
     		
-	public CursoDto(int id, String nome) {
-		this.id = id;
-		this.nome = nome;
+	public CursoDto() {
+		super();
 	}
 	
-	public CursoDto() {}
+	public CursoDto(int id, String nome) {
+		super(nome);
+		this.id = id;
+	}
 	
 	public int getId() {
 		return id;
@@ -17,13 +18,5 @@ public class CursoDto {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
 	}
 }

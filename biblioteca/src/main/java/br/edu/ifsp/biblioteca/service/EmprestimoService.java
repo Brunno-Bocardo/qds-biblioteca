@@ -10,6 +10,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import br.edu.ifsp.biblioteca.dto.EmprestimoCreateDto;
+import br.edu.ifsp.biblioteca.factory.EmprestimoValidationChainFactory;
+import br.edu.ifsp.biblioteca.handler.ValidationHandler;
 import br.edu.ifsp.biblioteca.model.Emprestimo;
 import br.edu.ifsp.biblioteca.model.Emprestimo.StatusEmprestimo;
 import br.edu.ifsp.biblioteca.model.Estoque;
@@ -20,36 +23,29 @@ import br.edu.ifsp.biblioteca.repository.EmprestimoRepository;
 @Service
 @Transactional
 public class EmprestimoService {
-
+	private final ValidationHandler<EmprestimoCreateDto> handlerChain;
 	private final EmprestimoRepository emprestimoRepository;
 	private final UsuarioService usuarioService;
 	private final EstoqueService estoqueService;
 	
 	public EmprestimoService(EmprestimoRepository emprestimoRepository, UsuarioService usuarioService, EstoqueService estoqueService) {
+		this.handlerChain = EmprestimoValidationChainFactory.createEmprestimoChain();
 		this.emprestimoRepository = emprestimoRepository;
 		this.usuarioService = usuarioService;
 		this.estoqueService = estoqueService;
 	}
 	
-	public Emprestimo registrarEmprestimo(String cpf, String codigoExemplar) {
-		if(cpf == null || cpf.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF é obrigatório");
-		}
+	public Emprestimo registrarEmprestimo(EmprestimoCreateDto emprestimo) {
+		handlerChain.handle(emprestimo);
 		
-		if(codigoExemplar == null || codigoExemplar.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo do Exemplar é obrigatorio");
-		}
-		
-		this.usuarioService.validarCpfFormato(cpf);
-		
-		Usuario usuario = this.usuarioService.procurarPorCpf(cpf);
+		Usuario usuario = this.usuarioService.procurarPorCpf(emprestimo.getCpf());
 		StatusUsuario status = usuario.getStatus();
 		
 		if(status != StatusUsuario.ATIVO) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Apenas usuários ativos podem realizar emprestimos");
 		}
 		
-		Estoque estoque = this.estoqueService.buscarPorCodigo(codigoExemplar);
+		Estoque estoque = this.estoqueService.buscarPorCodigo(emprestimo.getCodigoExemplar());
 		if(!estoque.isDisponivel()) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Apenas exemplares disponíveis podem ser emprestados");
 		}
@@ -97,7 +93,4 @@ public class EmprestimoService {
 		
 		return emprestimo;
 	}
-	
-	
-	
 }

@@ -3,23 +3,22 @@ package br.edu.ifsp.biblioteca.dto;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.model.Curso;
 
-public class UsuarioDto {
+public class UsuarioResponseDto extends UsuarioBaseDto {
 	private int idUsuario;
-	private String nomeUsuario;
-	private String cpf;
-	private String email;
+	public String nome;
+	public String cpf;
+	public String email;
 	private CategoriaUsuario categoria;
 	private Curso curso;
-	public UsuarioDto(int idUsuario, String nomeUsuario, String cpf, String email, CategoriaUsuario categoria,
+	public UsuarioResponseDto(int idUsuario, String nome, String cpf, String email, CategoriaUsuario categoria,
 			Curso curso) {
+		super(nome, cpf, email);
 		this.idUsuario = idUsuario;
-		this.nomeUsuario = nomeUsuario;
-		this.cpf = cpf;
-		this.email = email;
 		this.categoria = categoria;
 		this.curso = curso;
 	}
-	public UsuarioDto() {
+	public UsuarioResponseDto() {
+		super();
 	}
 	public int getIdUsuario() {
 		return idUsuario;
@@ -27,24 +26,7 @@ public class UsuarioDto {
 	public void setIdUsuario(int idUsuario) {
 		this.idUsuario = idUsuario;
 	}
-	public String getNomeUsuario() {
-		return nomeUsuario;
-	}
-	public void setNomeUsuario(String nomeUsuario) {
-		this.nomeUsuario = nomeUsuario;
-	}
-	public String getCpf() {
-		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
+
 	public CategoriaUsuario getCategoria() {
 		return categoria;
 	}
@@ -57,8 +39,5 @@ public class UsuarioDto {
 	public void setCurso(Curso curso) {
 		this.curso = curso;
 	}
-	
-	
-	
 }
 

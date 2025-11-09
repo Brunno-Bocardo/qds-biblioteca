@@ -41,7 +41,7 @@ public class UsuarioController {
 	}
 
     @PutMapping(value = "/{cpf}")
-	public ResponseEntity<Usuario> atualizarUsuario(@PathVariable String cpf, @RequestBody Usuario usuario){
+	public ResponseEntity<Usuario> atualizarUsuario(@PathVariable String cpf, @RequestBody UsuarioCreateDto usuario){
     	Usuario usuarioAtualizado = usuarioService.atualizarUsuario(cpf, usuario);
 	    return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizado);
 	}
