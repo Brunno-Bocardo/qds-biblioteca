@@ -17,7 +17,7 @@ public class EmprestimoStrategy implements IEmprestimoStrategy {
     @Override
     public LocalDate calculateDueDate(Usuario usuario, Estoque estoque, LocalDate loanDate) {
         if (loanDate == null) {
-            throw new IllegalArgumentException("Loan date must not be null");
+            throw new IllegalArgumentException("Data do empréstimo não deve ser nula");
         }
         return loanDate.plusDays(DEFAULT_DUE_DAYS);
     }
