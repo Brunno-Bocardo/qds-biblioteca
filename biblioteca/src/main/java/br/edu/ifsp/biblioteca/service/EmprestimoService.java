@@ -57,10 +57,7 @@ public class EmprestimoService {
         int maxLoans = emprestimoStrategy.maxAllowedActiveLoans(usuario);
 
         if (activeLoans >= maxLoans) {
-            throw new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED,
-                "User has reached the maximum number of active loans"
-            );
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário atingiu o número máximo de empréstimos");
         }
 
         LocalDate loanDate = LocalDate.now();
