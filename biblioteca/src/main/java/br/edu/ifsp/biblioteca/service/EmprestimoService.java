@@ -11,57 +11,55 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 import br.edu.ifsp.biblioteca.dto.EmprestimoCreateDto;
-import br.edu.ifsp.biblioteca.factory.EmprestimoValidationChainFactory;
-import br.edu.ifsp.biblioteca.handler.ValidationHandler;
 import br.edu.ifsp.biblioteca.model.Emprestimo;
 import br.edu.ifsp.biblioteca.model.Emprestimo.StatusEmprestimo;
 import br.edu.ifsp.biblioteca.model.Estoque;
 import br.edu.ifsp.biblioteca.model.Usuario;
 import br.edu.ifsp.biblioteca.model.Usuario.StatusUsuario;
 import br.edu.ifsp.biblioteca.repository.EmprestimoRepository;
-import br.edu.ifsp.biblioteca.strategy.EmprestimoStrategy;
+import br.edu.ifsp.biblioteca.strategy.EmprestimoStrategyResolver;
+import br.edu.ifsp.biblioteca.strategy.IEmprestimoStrategy;
 
 @Service
 @Transactional
 public class EmprestimoService {
-	private final ValidationHandler<EmprestimoCreateDto> handlerChain;
-	private final EmprestimoRepository emprestimoRepository;
-	private final UsuarioService usuarioService;
-	private final EstoqueService estoqueService;
-	private final EmprestimoStrategy emprestimoStrategy;
-	
-	public EmprestimoService(EmprestimoRepository emprestimoRepository, UsuarioService usuarioService, EstoqueService estoqueService, EmprestimoStrategy emprestimoStrategy) {
-		this.handlerChain = EmprestimoValidationChainFactory.createEmprestimoChain();
+
+    private final EmprestimoRepository emprestimoRepository;
+    private final UsuarioService usuarioService;
+    private final EstoqueService estoqueService;
+    private final EmprestimoStrategyResolver strategyResolver;
+
+    public EmprestimoService(EmprestimoRepository emprestimoRepository, UsuarioService usuarioService, EstoqueService estoqueService, EmprestimoStrategyResolver strategyResolver) {
         this.emprestimoRepository = emprestimoRepository;
         this.usuarioService = usuarioService;
         this.estoqueService = estoqueService;
-        this.emprestimoStrategy = emprestimoStrategy;
-	}
-	
-	public Emprestimo registrarEmprestimo(EmprestimoCreateDto emprestimoDto) {
-        handlerChain.handle(emprestimoDto);
+        this.strategyResolver = strategyResolver;
+    }
 
+    public Emprestimo registrarEmprestimo(EmprestimoCreateDto emprestimoDto) {
         Usuario usuario = this.usuarioService.procurarPorCpf(emprestimoDto.getCpf());
         StatusUsuario status = usuario.getStatus();
 
         if (status != StatusUsuario.ATIVO) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only active users can borrow books");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Apenas usuários ativos podem alugar livros");
         }
 
         Estoque estoque = this.estoqueService.buscarPorCodigo(emprestimoDto.getCodigoExemplar());
         if (!estoque.isDisponivel()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only available items can be borrowed");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Esse livro não está disponível");
         }
 
+        // --- STRATEGY ---
+        IEmprestimoStrategy strategy = strategyResolver.resolve(usuario);
         int activeLoans = emprestimoRepository.countByUsuarioAndStatus(usuario, StatusEmprestimo.ATIVO);
-        int maxLoans = emprestimoStrategy.maxAllowedActiveLoans(usuario);
+        int maxLoans = strategy.maxAllowedActiveLoans(usuario);
 
         if (activeLoans >= maxLoans) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário atingiu o número máximo de empréstimos");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário atingiu o limite de empréstimos");
         }
 
         LocalDate loanDate = LocalDate.now();
-        LocalDate dueDate = emprestimoStrategy.calculateDueDate(usuario, estoque, loanDate);
+        LocalDate dueDate = strategy.calculateDueDate(usuario, estoque, loanDate);
 
         Emprestimo novoEmprestimo = new Emprestimo();
         novoEmprestimo.setUsuario(usuario);
