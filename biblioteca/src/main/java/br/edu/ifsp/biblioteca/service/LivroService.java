@@ -3,37 +3,32 @@ package br.edu.ifsp.biblioteca.service;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import br.edu.ifsp.biblioteca.dto.LivroCreateDto;
 import br.edu.ifsp.biblioteca.dto.LivroUpdateDto;
 import br.edu.ifsp.biblioteca.factory.LivroValidationChainFactory;
-import br.edu.ifsp.biblioteca.handler.IsbnHandler;
-import br.edu.ifsp.biblioteca.handler.ValidationHandler;
 import br.edu.ifsp.biblioteca.model.CategoriaLivro;
 import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.repository.LivroRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 
 import java.util.*;
 
 @Service
 public class LivroService {
-	private final ValidationHandler<LivroCreateDto> handlerChain;
-	private final ValidationHandler<String> IsbnHandler;
+	private final LivroValidationChainFactory livroValidation;
 	private final LivroRepository livroRepository;
 	private final CategoriaLivroService categoriaLivroService;
 
-	public LivroService(LivroRepository livroRepository, CategoriaLivroService categoriaService) {
-		this.handlerChain = LivroValidationChainFactory.createLivroChain();
-		this.IsbnHandler = LivroValidationChainFactory.createIsbnChain();
+	public LivroService(LivroRepository livroRepository, CategoriaLivroService categoriaService,
+			LivroValidationChainFactory livroValidationChainFactory) {
+		this.livroValidation = livroValidationChainFactory;
 		this.livroRepository = livroRepository;
 		this.categoriaLivroService = categoriaService;
 	}
 
 	@Transactional
 	public Livro cadastrarLivro(LivroCreateDto livro) {
-		handlerChain.handle(livro);
+		livroValidation.createLivroChain().handle(livro);
 
 		if (livroRepository.existsByIsbn(livro.getIsbn())) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um livro com este ISBN");
@@ -51,7 +46,7 @@ public class LivroService {
 	}
 
 	public Livro procurarPorIsbn(String isbn) {
-		IsbnHandler.handle(isbn);
+		livroValidation.createIsbnChain().handle(isbn);
 		return livroRepository.findByIsbn(isbn).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
 				"Não foi localizado nenhum livro com este ISBN"));
 	}

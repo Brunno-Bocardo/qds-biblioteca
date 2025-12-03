@@ -24,5 +24,6 @@ public class LivroHandler extends BaseHandler<LivroCreateDto> {
         if (livroDto.getCategoriaId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O categoria é obrigatório");
         }
+        super.handle(livroDto);
     }
 }

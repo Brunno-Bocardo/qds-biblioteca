@@ -8,9 +8,11 @@ import br.edu.ifsp.biblioteca.handler.ValidationHandler;
 
 public class EmprestimoValidationChainFactory {
 	public static ValidationHandler<EmprestimoCreateDto> createEmprestimoChain() {
-		ExemplarHandler<EmprestimoCreateDto> handleExemplar = new ExemplarHandler<>(EmprestimoCreateDto::getCodigoExemplar);
+		ExemplarHandler<EmprestimoCreateDto> handleExemplar = new ExemplarHandler<>(
+				EmprestimoCreateDto::getCodigoExemplar);
 		CpfHandler<EmprestimoCreateDto> handleFormatCpf = new CpfHandler<>(EmprestimoCreateDto::getCpf);
-		SequenceCpfHandler<EmprestimoCreateDto> handleSequenceCpf = new SequenceCpfHandler<>(EmprestimoCreateDto::getCpf);
+		SequenceCpfHandler<EmprestimoCreateDto> handleSequenceCpf = new SequenceCpfHandler<>(
+				EmprestimoCreateDto::getCpf);
 		handleExemplar.setNext(handleFormatCpf);
 		handleFormatCpf.setNext(handleSequenceCpf);
 		return handleExemplar;
