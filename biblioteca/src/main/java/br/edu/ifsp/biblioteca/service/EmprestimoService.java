@@ -82,7 +82,8 @@ public class EmprestimoService {
 	
 	public Emprestimo registrarDevolucaoEmprestimo(int idEmprestimo) {
 
-        Emprestimo emprestimo = emprestimoRepository.getReferenceById(idEmprestimo);
+		Emprestimo emprestimo = emprestimoRepository.findById(idEmprestimo)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Empréstimo não encontrado"));
         LocalDate dataDevolucao = LocalDate.now();
         LocalDate dataPrevistaDevolucao = emprestimo.getDataPrevistaDevolucao();
 
