@@ -9,15 +9,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifsp.biblioteca.dto.CategoriaUsuarioDto;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.service.CategoriaUsuarioService;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
 @RequestMapping("/library/catalogos/categorias-usuario")
 public class CategoriaUsuarioController {
+	
+	public enum CategoriaTipo {
+	    aluno,
+	    professor
+	}
 
 	private final CategoriaUsuarioService categoriaUsuarioService;
 
@@ -26,12 +33,16 @@ public class CategoriaUsuarioController {
 	}
 
 	@PostMapping
-	public ResponseEntity<CategoriaUsuarioDto> criarCategoriaUsuario(String nome) {
-		CategoriaUsuario novaCategoria = new CategoriaUsuario(null, nome);
-		CategoriaUsuario categoriaSalva = categoriaUsuarioService.cadastrarCategoriaUsuario(novaCategoria);
-		CategoriaUsuarioDto respostaDto = new CategoriaUsuarioDto(categoriaSalva.getIdCategoriaUsuario(),
-				categoriaSalva.getNomeCategoriaUsuario());
-		return ResponseEntity.status(HttpStatus.CREATED).body(respostaDto);
+	public ResponseEntity<CategoriaUsuarioDto> criarCategoriaUsuario(@RequestParam CategoriaTipo tipo) {
+	    CategoriaUsuario novaCategoria = new CategoriaUsuario(null, tipo.name());
+	    CategoriaUsuario categoriaSalva = categoriaUsuarioService.cadastrarCategoriaUsuario(novaCategoria);
+
+	    CategoriaUsuarioDto respostaDto = new CategoriaUsuarioDto(
+	            categoriaSalva.getIdCategoriaUsuario(),
+	            categoriaSalva.getNomeCategoriaUsuario()
+	    );
+
+	    return ResponseEntity.status(HttpStatus.CREATED).body(respostaDto);
 	}
 
 	@GetMapping
