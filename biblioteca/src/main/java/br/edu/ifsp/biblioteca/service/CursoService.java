@@ -55,7 +55,7 @@ public class CursoService {
         if(!exists) {
         	cursoRepository.delete(cursoAtual);
         } else {
-        	throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Curso em Uso");
+        	throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Curso está sendo utilizado");
         }
     }
 
