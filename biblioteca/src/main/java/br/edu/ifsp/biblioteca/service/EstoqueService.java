@@ -71,4 +71,9 @@ public class EstoqueService {
 
         estoqueRepository.delete(estoque);
     }
+
+    public boolean existeExemplarParaOIsbn(String isbn) {
+        return estoqueRepository.existsByLivroIsbn(isbn);
+    }
+    
 }
