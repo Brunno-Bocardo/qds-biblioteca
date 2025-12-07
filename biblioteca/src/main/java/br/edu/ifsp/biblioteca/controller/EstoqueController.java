@@ -26,7 +26,7 @@ public class EstoqueController {
 
     @PostMapping
     public ResponseEntity<Estoque> cadastrarExemplar(@Valid @RequestBody EstoqueCreateDto createDto) {
-        Estoque estoque = estoqueService.cadastrarExemplar(createDto.getIsbn(), createDto.getCodigoExemplar());
+        Estoque estoque = estoqueService.cadastrarExemplar(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(estoque);
     }
 
