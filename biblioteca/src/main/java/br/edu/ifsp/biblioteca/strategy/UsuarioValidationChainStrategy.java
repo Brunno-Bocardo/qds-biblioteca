@@ -31,9 +31,4 @@ public class UsuarioValidationChainStrategy {
 		handleCpf.setNext(handleSequenceCpf);
 		return handleCpf;
 	}
-	
-	public ValidationHandler<String> createEmailChain() {
-		EmailHandler<String> handleEmail = new EmailHandler<>(s -> s);
-		return handleEmail;		
-	}
 }
