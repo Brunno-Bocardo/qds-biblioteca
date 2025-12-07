@@ -13,9 +13,11 @@ import jakarta.transaction.Transactional;
 public class CursoService {
 
     private final CursoRepository cursoRepository;
+    private final UsuarioService usuarioService;
 
-    public CursoService(CursoRepository cursoRepository) {
+    public CursoService(CursoRepository cursoRepository, UsuarioService usuarioService) {
         this.cursoRepository = cursoRepository;
+        this.usuarioService = usuarioService;
     }
 
     public Curso criarCurso(String nomeCurso) {
@@ -48,13 +50,18 @@ public class CursoService {
 
     public void deletarCursoPorId(Integer idCurso) {
         Curso cursoAtual = procurarCursoPorId(idCurso);
-        // TODO: checar se existem users vinculados
-        cursoRepository.delete(cursoAtual);
+        boolean exists = usuarioService.consultarPorCurso(cursoAtual);
+        
+        if(!exists) {
+        	cursoRepository.delete(cursoAtual);
+        } else {
+        	throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Curso em Uso");
+        }
     }
 
     private void validarNome(String nome) {
         if (nome == null || nome.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "nomeCurso é obrigatório");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O nome do curso é obrigatório");
         }
     }
 }

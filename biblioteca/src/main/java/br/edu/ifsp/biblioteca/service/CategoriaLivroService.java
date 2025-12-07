@@ -27,7 +27,7 @@ public class CategoriaLivroService {
 		return categoriaLivroRepository.save(categoria);
 	}
 	
-	public CategoriaLivro consultar(String categoria) {
+	public CategoriaLivro consultarPorNome(String categoria) {
 		return categoriaLivroRepository.findByNomeCategoriaLivro(categoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"A categoria informada não consta no sistema"));
 	}
 			

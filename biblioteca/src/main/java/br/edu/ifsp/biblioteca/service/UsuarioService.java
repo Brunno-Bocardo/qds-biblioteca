@@ -5,7 +5,6 @@ import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.model.Curso;
 import br.edu.ifsp.biblioteca.model.Usuario;
 import br.edu.ifsp.biblioteca.model.Usuario.StatusUsuario;
-import br.edu.ifsp.biblioteca.repository.CategoriaUsuarioRepository;
 import br.edu.ifsp.biblioteca.repository.CursoRepository;
 import br.edu.ifsp.biblioteca.repository.UsuarioRepository;
 import br.edu.ifsp.biblioteca.strategy.UsuarioValidationChainStrategy;
@@ -22,12 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class UsuarioService {
 	private final UsuarioValidationChainStrategy usuarioValidation;
     private final UsuarioRepository usuarioRepository;
-    private final CategoriaUsuarioRepository categoriaRepository;
+    private final CategoriaUsuarioService categoriaService;
     private final CursoRepository cursoRepository;
     
-    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioRepository categoriaRepository, CursoRepository cursoRepository, UsuarioValidationChainStrategy usuarioValidationChain) {
+    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioService categoriaService, CursoRepository cursoRepository, UsuarioValidationChainStrategy usuarioValidationChain) {
     	this.usuarioRepository = usuarioRepository;
-        this.categoriaRepository = categoriaRepository;
+        this.categoriaService = categoriaService;
         this.cursoRepository = cursoRepository;
         this.usuarioValidation = usuarioValidationChain;
     }  
@@ -43,11 +42,8 @@ public class UsuarioService {
         	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "E-mail já cadastrado");
         }
 
-        CategoriaUsuario categoriaUsuario = categoriaRepository.findById(usuario.getCategoriaId()).orElse(null);
-        if (categoriaUsuario == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada");
-        }
-
+        CategoriaUsuario categoriaUsuario = categoriaService.consultarPorId(usuario.getCategoriaId());
+        
         Curso curso = cursoRepository.findById(usuario.getCursoId()).orElse(null);
         if (curso == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Curso não encontrado");
@@ -71,6 +67,10 @@ public class UsuarioService {
     public Usuario procurarPorCpf(String cpf){
 		return usuarioRepository.findByCpf(cpf).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi localizado nenhum usuário com este CPF."));
 	}
+    
+    public boolean consultarPorCurso(Curso curso) {
+    	return usuarioRepository.existsByCurso(curso);
+    }
     
     public void validarDadosDuplicados(Integer idAtual, String novoCpf, String novoEmail) {
         if (usuarioRepository.existsByCpfAndIdUsuarioNot(novoCpf, idAtual)) {
@@ -98,8 +98,7 @@ public class UsuarioService {
         usuarioAtual.setCpf(novoCpf);
 
         if (novosDadosUsuario.getCategoriaId() > 0) {
-            var categoriaUsuario = categoriaRepository.findById(novosDadosUsuario.getCategoriaId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada."));
+            var categoriaUsuario = categoriaService.consultarPorId(novosDadosUsuario.getCategoriaId());
             usuarioAtual.setCategoria(categoriaUsuario);
         }
 

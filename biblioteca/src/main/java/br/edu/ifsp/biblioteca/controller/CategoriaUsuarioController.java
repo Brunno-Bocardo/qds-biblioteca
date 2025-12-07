@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.edu.ifsp.biblioteca.dto.CategoriaUsuarioDto;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.service.CategoriaUsuarioService;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
 @RequestMapping("/library/catalogos/categorias-usuario")
@@ -57,7 +55,7 @@ public class CategoriaUsuarioController {
 
 	@GetMapping("/{nome}")
 	public ResponseEntity<CategoriaUsuarioDto> consultarPorNome(@PathVariable String nome) {
-		CategoriaUsuario categoriaEncontrada = categoriaUsuarioService.consultar(nome);
+		CategoriaUsuario categoriaEncontrada = categoriaUsuarioService.consultarPorNome(nome);
 		CategoriaUsuarioDto categoriaDto = new CategoriaUsuarioDto(categoriaEncontrada.getIdCategoriaUsuario(),
 				categoriaEncontrada.getNomeCategoriaUsuario());
 		return ResponseEntity.status(HttpStatus.OK).body(categoriaDto);
