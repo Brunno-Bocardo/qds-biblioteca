@@ -5,23 +5,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import br.edu.ifsp.biblioteca.dto.LivroCreateDto;
 import br.edu.ifsp.biblioteca.dto.LivroUpdateDto;
-import br.edu.ifsp.biblioteca.factory.LivroValidationChainFactory;
 import br.edu.ifsp.biblioteca.model.CategoriaLivro;
 import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.repository.LivroRepository;
+import br.edu.ifsp.biblioteca.strategy.LivroValidationChainStrategy;
 import jakarta.transaction.Transactional;
 
 import java.util.*;
 
 @Service
 public class LivroService {
-	private final LivroValidationChainFactory livroValidation;
+	private final LivroValidationChainStrategy livroValidation;
 	private final LivroRepository livroRepository;
 	private final CategoriaLivroService categoriaLivroService;
 
 	public LivroService(LivroRepository livroRepository, CategoriaLivroService categoriaService,
-			LivroValidationChainFactory livroValidationChainFactory) {
-		this.livroValidation = livroValidationChainFactory;
+			LivroValidationChainStrategy livroValidationChain) {
+		this.livroValidation = livroValidationChain;
 		this.livroRepository = livroRepository;
 		this.categoriaLivroService = categoriaService;
 	}

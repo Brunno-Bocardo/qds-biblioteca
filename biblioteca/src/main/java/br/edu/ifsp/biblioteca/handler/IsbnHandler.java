@@ -14,8 +14,8 @@ public class IsbnHandler<T> extends BaseHandler<T> {
 
     @Override
     public void handle(T data) {
-
         String isbn;
+        
         if (data instanceof String s) {
             isbn = s;
         } else {
@@ -25,6 +25,7 @@ public class IsbnHandler<T> extends BaseHandler<T> {
         if (isbn == null || isbn.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O ISBN é obrigatório");
         }
+        
         super.handle(data);
     }
 

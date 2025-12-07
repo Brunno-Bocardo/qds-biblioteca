@@ -14,10 +14,18 @@ public class ExemplarHandler<T> extends BaseHandler<T> {
 	
 	@Override
 	public void handle(T data) {
-		String codigoExemplar = codigoExtractor.apply(data);
+        String codigoExemplar;
+        
+        if (data instanceof String s) {
+        	codigoExemplar = s;
+        } else {
+        	codigoExemplar = codigoExtractor.apply(data);
+        }
+        
 		if(codigoExemplar == null || codigoExemplar.isBlank()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo do Exemplar é obrigatorio");
 		}
+		
 		super.handle(data);
 	}
 }

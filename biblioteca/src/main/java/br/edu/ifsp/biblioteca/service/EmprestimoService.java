@@ -18,6 +18,7 @@ import br.edu.ifsp.biblioteca.model.Usuario;
 import br.edu.ifsp.biblioteca.model.Usuario.StatusUsuario;
 import br.edu.ifsp.biblioteca.repository.EmprestimoRepository;
 import br.edu.ifsp.biblioteca.strategy.EmprestimoStrategyResolver;
+import br.edu.ifsp.biblioteca.strategy.EmprestimoValidationChainStrategy;
 import br.edu.ifsp.biblioteca.strategy.IEmprestimoStrategy;
 
 @Service
@@ -28,15 +29,18 @@ public class EmprestimoService {
     private final UsuarioService usuarioService;
     private final EstoqueService estoqueService;
     private final EmprestimoStrategyResolver strategyResolver;
+    private final EmprestimoValidationChainStrategy emprestimoValidation;
 
-    public EmprestimoService(EmprestimoRepository emprestimoRepository, UsuarioService usuarioService, EstoqueService estoqueService, EmprestimoStrategyResolver strategyResolver) {
+    public EmprestimoService(EmprestimoRepository emprestimoRepository, UsuarioService usuarioService, EstoqueService estoqueService, EmprestimoStrategyResolver strategyResolver, EmprestimoValidationChainStrategy emprestimoValidationChain) {
         this.emprestimoRepository = emprestimoRepository;
         this.usuarioService = usuarioService;
         this.estoqueService = estoqueService;
         this.strategyResolver = strategyResolver;
+        this.emprestimoValidation = emprestimoValidationChain;
     }
 
     public Emprestimo registrarEmprestimo(EmprestimoCreateDto emprestimoDto) {
+    	emprestimoValidation.createEmprestimoChain().handle(emprestimoDto);
         Usuario usuario = this.usuarioService.procurarPorCpf(emprestimoDto.getCpf());
         StatusUsuario status = usuario.getStatus();
 

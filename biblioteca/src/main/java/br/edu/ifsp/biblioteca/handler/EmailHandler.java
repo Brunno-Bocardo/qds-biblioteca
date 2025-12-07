@@ -14,10 +14,18 @@ public class EmailHandler<T> extends BaseHandler<T> {
 	
 	@Override
 	public void handle(T data) {
-		String email = emailExtractor.apply(data);
+		String email;
+		
+		if(data instanceof String s) {
+			email = s;
+		} else {
+			email = emailExtractor.apply(data);
+		}
+		
 		if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail inválido");
         }
+		
 		super.handle(data);
 	}
 }

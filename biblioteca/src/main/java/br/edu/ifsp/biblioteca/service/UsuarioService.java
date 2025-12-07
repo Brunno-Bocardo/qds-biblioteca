@@ -1,8 +1,6 @@
 package br.edu.ifsp.biblioteca.service;
 
 import br.edu.ifsp.biblioteca.dto.UsuarioCreateDto;
-import br.edu.ifsp.biblioteca.factory.UsuarioValidationChainFactory;
-import br.edu.ifsp.biblioteca.handler.ValidationHandler;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.model.Curso;
 import br.edu.ifsp.biblioteca.model.Usuario;
@@ -10,6 +8,7 @@ import br.edu.ifsp.biblioteca.model.Usuario.StatusUsuario;
 import br.edu.ifsp.biblioteca.repository.CategoriaUsuarioRepository;
 import br.edu.ifsp.biblioteca.repository.CursoRepository;
 import br.edu.ifsp.biblioteca.repository.UsuarioRepository;
+import br.edu.ifsp.biblioteca.strategy.UsuarioValidationChainStrategy;
 
 import java.util.List;
 
@@ -21,20 +20,20 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 public class UsuarioService {
-	private final ValidationHandler<UsuarioCreateDto> handlerChain;
+	private final UsuarioValidationChainStrategy usuarioValidation;
     private final UsuarioRepository usuarioRepository;
     private final CategoriaUsuarioRepository categoriaRepository;
     private final CursoRepository cursoRepository;
     
-    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioRepository categoriaRepository, CursoRepository cursoRepository) {
-        this.handlerChain = UsuarioValidationChainFactory.createUsuarioChain();
+    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioRepository categoriaRepository, CursoRepository cursoRepository, UsuarioValidationChainStrategy usuarioValidationChain) {
     	this.usuarioRepository = usuarioRepository;
         this.categoriaRepository = categoriaRepository;
         this.cursoRepository = cursoRepository;
+        this.usuarioValidation = usuarioValidationChain;
     }  
 
     public Usuario criarUsuario(UsuarioCreateDto usuario) {
-    	handlerChain.handle(usuario);
+    	usuarioValidation.createUsuarioChain().handle(usuario);
 
         if (usuarioRepository.existsByCpf(usuario.getCpf())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
@@ -74,21 +73,20 @@ public class UsuarioService {
 	}
     
     public void validarDadosDuplicados(Integer idAtual, String novoCpf, String novoEmail) {
-        if (novoCpf != null && !novoCpf.isBlank()) {
-            if (usuarioRepository.existsByCpfAndIdUsuarioNot(novoCpf, idAtual)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este CPF.");
-            }
+        if (usuarioRepository.existsByCpfAndIdUsuarioNot(novoCpf, idAtual)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este CPF.");
         }
-        if (novoEmail != null && !novoEmail.isBlank()) {
-            if (usuarioRepository.existsByEmailAndIdUsuarioNot(novoEmail.trim(), idAtual)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este e-mail.");
-            }
+   
+        if (usuarioRepository.existsByEmailAndIdUsuarioNot(novoEmail.trim(), idAtual)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este e-mail.");
         }
     }
     
     @Transactional
     public Usuario atualizarUsuario(String cpf, UsuarioCreateDto novosDadosUsuario) {
-    	handlerChain.handle(novosDadosUsuario);
+    	usuarioValidation.createCpfChain().handle(cpf);
+    	usuarioValidation.createUsuarioChain().handle(novosDadosUsuario);
+    	
         Usuario usuarioAtual = procurarPorCpf(cpf);
         String novoCpf   = novosDadosUsuario.getCpf();
         String novoEmail = novosDadosUsuario.getEmail();
@@ -116,6 +114,7 @@ public class UsuarioService {
     
     @Transactional
 	public void deletarUsuario(String cpf) {
+    	usuarioValidation.createCpfChain().handle(cpf);
     	procurarPorCpf(cpf);
     	usuarioRepository.deleteByCpf(cpf);
 	}
