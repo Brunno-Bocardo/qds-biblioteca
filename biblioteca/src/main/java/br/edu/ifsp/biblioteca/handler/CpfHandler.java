@@ -15,7 +15,13 @@ public class CpfHandler<T> extends BaseHandler<T>{
 	
 	@Override
 	public void handle(T data){
-		String cpf = cpfExtractor.apply(data);
+		String cpf;
+
+		if(data instanceof String s) {
+			cpf = s;
+		} else {
+			cpf = cpfExtractor.apply(data);
+		}
 				
 		if (cpf == null || cpf.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF é obrigatório");
