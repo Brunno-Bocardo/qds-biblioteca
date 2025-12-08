@@ -18,12 +18,14 @@ public class LivroService {
 	private final LivroValidationChainFactory livroValidation;
 	private final LivroRepository livroRepository;
 	private final CategoriaLivroService categoriaLivroService;
+	private final EstoqueService estoqueService;
 
 	public LivroService(LivroRepository livroRepository, CategoriaLivroService categoriaService,
-			LivroValidationChainFactory livroValidationChainFactory) {
+			LivroValidationChainFactory livroValidationChainFactory, EstoqueService estoqueService) {
 		this.livroValidation = livroValidationChainFactory;
 		this.livroRepository = livroRepository;
 		this.categoriaLivroService = categoriaService;
+		this.estoqueService = estoqueService;
 	}
 
 	@Transactional
@@ -77,8 +79,11 @@ public class LivroService {
 
 	@Transactional
 	public void deletar(String isbn) {
-		// TODO: precisa verrificar se há emprestimos do livro.
-		// procurarPorIsbn(isbn);
+		this.procurarPorIsbn(isbn);
+		if (estoqueService.existeExemplarParaOIsbn(isbn)) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT,
+					"Não é possível deletar um livro que possui exemplares");
+		}
 		livroRepository.deleteByIsbn(isbn);
 	}
 
