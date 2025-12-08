@@ -4,6 +4,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import br.edu.ifsp.biblioteca.builder.CursoValidationChainBuilder;
 import br.edu.ifsp.biblioteca.model.Curso;
 import br.edu.ifsp.biblioteca.repository.CursoRepository;
 import jakarta.transaction.Transactional;
@@ -13,16 +15,22 @@ import jakarta.transaction.Transactional;
 public class CursoService {
 
     private final CursoRepository cursoRepository;
+    private final UsuarioService usuarioService;
+    private final CursoValidationChainBuilder cursoValidation;
 
-    public CursoService(CursoRepository cursoRepository) {
+    public CursoService(CursoRepository cursoRepository, UsuarioService usuarioService, CursoValidationChainBuilder cursoValidation) {
         this.cursoRepository = cursoRepository;
+        this.usuarioService = usuarioService;
+        this.cursoValidation = cursoValidation;
     }
 
     public Curso criarCurso(String nomeCurso) {
-        validarNome(nomeCurso);
+    	cursoValidation.buildNomeChain().handle(nomeCurso);
+    	
         if (cursoRepository.existsByNomeCursoIgnoreCase(nomeCurso)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro curso com esse nome.");
         }
+        
         Curso curso = new Curso();
         curso.setNomeCurso(nomeCurso.trim());
         return cursoRepository.save(curso);
@@ -38,23 +46,25 @@ public class CursoService {
 
     public Curso atualizarCursoPorId(Integer idCurso, String novoNome) {
         Curso cursoAtual = procurarCursoPorId(idCurso);
-        validarNome(novoNome);
+        
+        cursoValidation.buildNomeChain().handle(novoNome);
+
         if (cursoRepository.existsByNomeCursoIgnoreCaseAndIdCursoNot(novoNome, idCurso)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro curso com esse nome.");
         }
+        
         cursoAtual.setNomeCurso(novoNome.trim());
         return cursoRepository.save(cursoAtual);
     }
 
     public void deletarCursoPorId(Integer idCurso) {
         Curso cursoAtual = procurarCursoPorId(idCurso);
-        // TODO: checar se existem users vinculados
-        cursoRepository.delete(cursoAtual);
-    }
+        boolean exists = usuarioService.consultarPorCurso(cursoAtual);
 
-    private void validarNome(String nome) {
-        if (nome == null || nome.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "nomeCurso é obrigatório");
+        if(!exists) {
+        	cursoRepository.delete(cursoAtual);
+        } else {
+        	throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Curso em Uso");
         }
     }
 }

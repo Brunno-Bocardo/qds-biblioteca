@@ -8,19 +8,15 @@ import br.edu.ifsp.biblioteca.dto.UsuarioCreateDto;
 public class UsuarioHandler extends BaseHandler<UsuarioCreateDto> {
 	@Override
 	public void handle(UsuarioCreateDto usuarioDto) {
-		if (usuarioDto.getNome() == null || usuarioDto.getNome().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nome do usuário é obrigatório");
-        }
-        
         if (usuarioDto.getEmail() == null || usuarioDto.getEmail().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail é obrigatório");
         }
         
-        if (usuarioDto.getCategoriaId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria é obrigatória");
+        if (usuarioDto.getCategoriaId() == null || usuarioDto.getCategoriaId() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria é obrigatório");
         }
         
-        if (usuarioDto.getCursoId() == null) {
+        if (usuarioDto.getCursoId() == null || usuarioDto.getCursoId() == 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Curso é obrigatório");
         }
         

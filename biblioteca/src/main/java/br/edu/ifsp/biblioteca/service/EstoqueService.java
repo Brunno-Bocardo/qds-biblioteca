@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import br.edu.ifsp.biblioteca.builder.EstoqueValidationChainBuilder;
 import br.edu.ifsp.biblioteca.dto.EstoqueCreateDto;
-import br.edu.ifsp.biblioteca.factory.EstoqueValidationChainFactory; // Import Novo
 import br.edu.ifsp.biblioteca.model.Estoque;
 import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.repository.EstoqueRepository;
@@ -18,16 +18,16 @@ public class EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
     private final LivroRepository livroRepository;
-    private final EstoqueValidationChainFactory estoqueValidation; 
+    private final EstoqueValidationChainBuilder estoqueValidation; 
 
-    public EstoqueService(EstoqueRepository estoqueRepository, LivroRepository livroRepository, EstoqueValidationChainFactory estoqueValidation) {
+    public EstoqueService(EstoqueRepository estoqueRepository, LivroRepository livroRepository, EstoqueValidationChainBuilder estoqueValidation) {
         this.estoqueRepository = estoqueRepository;
         this.livroRepository = livroRepository;
         this.estoqueValidation = estoqueValidation;
     }
 
     public Estoque cadastrarExemplar(EstoqueCreateDto createDto) {
-        estoqueValidation.createEstoqueChain().handle(createDto);
+        estoqueValidation.buildEstoqueChain().handle(createDto);
 
         Livro livro = livroRepository.findByIsbn(createDto.getIsbn())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado para o ISBN informado"));

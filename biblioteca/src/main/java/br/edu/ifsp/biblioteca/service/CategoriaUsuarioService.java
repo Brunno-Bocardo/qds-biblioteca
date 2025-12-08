@@ -26,9 +26,14 @@ public class CategoriaUsuarioService {
 		}
 		return categoriaUsuarioRepository.save(categoriaUsuario);
 	}
-	public CategoriaUsuario consultar(String categoria) {
+	public CategoriaUsuario consultarPorNome(String categoria) {
 		return categoriaUsuarioRepository.findByNomeCategoriaUsuario(categoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "A categoria informada não consta no sistema"));
 	}
+	
+	public CategoriaUsuario consultarPorId(Integer categoria) {
+		return categoriaUsuarioRepository.findById(categoria).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "A categoria informada não consta no sistema"));
+	}
+	
 	public List<CategoriaUsuario> listarTodas() {
 		return categoriaUsuarioRepository.findAll();
 	}

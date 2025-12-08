@@ -39,7 +39,7 @@ public class CategoriaLivroController {
 
     @GetMapping("/{nome}")
     public ResponseEntity<CategoriaLivroDto> consultarPorNome(@PathVariable String nome) {
-    	CategoriaLivro categoriaEncontrada = categoriaLivroService.consultar(nome);
+    	CategoriaLivro categoriaEncontrada = categoriaLivroService.consultarPorNome(nome);
     	CategoriaLivroDto categoriaDto = new CategoriaLivroDto(categoriaEncontrada.getIdCategoriaLivro(),categoriaEncontrada.getNomeCategoriaLivro());
         return ResponseEntity.status(HttpStatus.OK).body(categoriaDto);
     }

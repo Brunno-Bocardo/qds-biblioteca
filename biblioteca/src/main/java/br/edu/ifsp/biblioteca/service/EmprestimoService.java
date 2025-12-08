@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import br.edu.ifsp.biblioteca.builder.EmprestimoValidationChainBuilder;
 import br.edu.ifsp.biblioteca.dto.EmprestimoCreateDto;
 import br.edu.ifsp.biblioteca.model.Emprestimo;
 import br.edu.ifsp.biblioteca.model.Emprestimo.StatusEmprestimo;
@@ -28,15 +29,19 @@ public class EmprestimoService {
     private final UsuarioService usuarioService;
     private final EstoqueService estoqueService;
     private final EmprestimoStrategyResolver strategyResolver;
+    private final EmprestimoValidationChainBuilder emprestimoValidation;
 
-    public EmprestimoService(EmprestimoRepository emprestimoRepository, UsuarioService usuarioService, EstoqueService estoqueService, EmprestimoStrategyResolver strategyResolver) {
+    public EmprestimoService(EmprestimoRepository emprestimoRepository, UsuarioService usuarioService, EstoqueService estoqueService, EmprestimoStrategyResolver strategyResolver, EmprestimoValidationChainBuilder emprestimoValidation) {
         this.emprestimoRepository = emprestimoRepository;
         this.usuarioService = usuarioService;
         this.estoqueService = estoqueService;
         this.strategyResolver = strategyResolver;
+        this.emprestimoValidation = emprestimoValidation;
     }
 
     public Emprestimo registrarEmprestimo(EmprestimoCreateDto emprestimoDto) {
+    	emprestimoValidation.buildEmprestimoChain().handle(emprestimoDto);
+    	
         Usuario usuario = this.usuarioService.procurarPorCpf(emprestimoDto.getCpf());
         StatusUsuario status = usuario.getStatus();
 

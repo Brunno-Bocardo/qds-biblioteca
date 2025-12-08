@@ -1,13 +1,11 @@
 package br.edu.ifsp.biblioteca.service;
 
+import br.edu.ifsp.biblioteca.builder.UsuarioValidationChainBuilder;
 import br.edu.ifsp.biblioteca.dto.UsuarioCreateDto;
-import br.edu.ifsp.biblioteca.factory.UsuarioValidationChainFactory;
-import br.edu.ifsp.biblioteca.handler.ValidationHandler;
 import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
 import br.edu.ifsp.biblioteca.model.Curso;
 import br.edu.ifsp.biblioteca.model.Usuario;
 import br.edu.ifsp.biblioteca.model.Usuario.StatusUsuario;
-import br.edu.ifsp.biblioteca.repository.CategoriaUsuarioRepository;
 import br.edu.ifsp.biblioteca.repository.CursoRepository;
 import br.edu.ifsp.biblioteca.repository.UsuarioRepository;
 
@@ -21,20 +19,20 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 public class UsuarioService {
-	private final ValidationHandler<UsuarioCreateDto> handlerChain;
+	private final UsuarioValidationChainBuilder usuarioValidation;
     private final UsuarioRepository usuarioRepository;
-    private final CategoriaUsuarioRepository categoriaRepository;
+    private final CategoriaUsuarioService categoriaService;
     private final CursoRepository cursoRepository;
     
-    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioRepository categoriaRepository, CursoRepository cursoRepository) {
-        this.handlerChain = UsuarioValidationChainFactory.createUsuarioChain();
+    public UsuarioService(UsuarioRepository usuarioRepository, CategoriaUsuarioService categoriaService, CursoRepository cursoRepository, UsuarioValidationChainBuilder usuarioValidationChain) {
+        this.usuarioValidation = usuarioValidationChain;
     	this.usuarioRepository = usuarioRepository;
-        this.categoriaRepository = categoriaRepository;
+        this.categoriaService = categoriaService;
         this.cursoRepository = cursoRepository;
     }  
 
     public Usuario criarUsuario(UsuarioCreateDto usuario) {
-    	handlerChain.handle(usuario);
+    	usuarioValidation.buildUsuarioChain().handle(usuario);
 
         if (usuarioRepository.existsByCpf(usuario.getCpf())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
@@ -44,9 +42,9 @@ public class UsuarioService {
         	throw new ResponseStatusException(HttpStatus.NOT_FOUND, "E-mail já cadastrado");
         }
 
-        CategoriaUsuario categoriaUsuario = categoriaRepository.findById(usuario.getCategoriaId()).orElse(null);
+        CategoriaUsuario categoriaUsuario = categoriaService.consultarPorId(usuario.getCategoriaId());
         if (categoriaUsuario == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Categoria Usuario não encontrada");
         }
 
         Curso curso = cursoRepository.findById(usuario.getCursoId()).orElse(null);
@@ -73,22 +71,23 @@ public class UsuarioService {
 		return usuarioRepository.findByCpf(cpf).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Não foi localizado nenhum usuário com este CPF."));
 	}
     
+    public boolean consultarPorCurso(Curso curso) {
+    	return usuarioRepository.existsByCurso(curso);
+    }
+    
     public void validarDadosDuplicados(Integer idAtual, String novoCpf, String novoEmail) {
-        if (novoCpf != null && !novoCpf.isBlank()) {
-            if (usuarioRepository.existsByCpfAndIdUsuarioNot(novoCpf, idAtual)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este CPF.");
-            }
+    	if (usuarioRepository.existsByCpfAndIdUsuarioNot(novoCpf, idAtual)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este CPF.");
         }
-        if (novoEmail != null && !novoEmail.isBlank()) {
-            if (usuarioRepository.existsByEmailAndIdUsuarioNot(novoEmail.trim(), idAtual)) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este e-mail.");
-            }
+    	if (usuarioRepository.existsByEmailAndIdUsuarioNot(novoEmail.trim(), idAtual)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro usuário com este e-mail.");
         }
     }
     
     @Transactional
     public Usuario atualizarUsuario(String cpf, UsuarioCreateDto novosDadosUsuario) {
-    	handlerChain.handle(novosDadosUsuario);
+    	usuarioValidation.buildCpfChain().handle(cpf);
+    	usuarioValidation.buildUsuarioChain().handle(novosDadosUsuario);;
         Usuario usuarioAtual = procurarPorCpf(cpf);
         String novoCpf   = novosDadosUsuario.getCpf();
         String novoEmail = novosDadosUsuario.getEmail();
@@ -100,8 +99,7 @@ public class UsuarioService {
         usuarioAtual.setCpf(novoCpf);
 
         if (novosDadosUsuario.getCategoriaId() > 0) {
-            var categoriaUsuario = categoriaRepository.findById(novosDadosUsuario.getCategoriaId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "CategoriaUsuario não encontrada."));
+        	var categoriaUsuario = categoriaService.consultarPorId(novosDadosUsuario.getCategoriaId());
             usuarioAtual.setCategoria(categoriaUsuario);
         }
 
