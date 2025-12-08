@@ -23,7 +23,7 @@ public class ExemplarHandler<T> extends BaseHandler<T> {
         }
 		
 		if(codigoExemplar == null || codigoExemplar.isBlank()) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo do Exemplar é obrigatorio");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigo do Exemplar é obrigatório");
 		}
 		
 		super.handle(data);

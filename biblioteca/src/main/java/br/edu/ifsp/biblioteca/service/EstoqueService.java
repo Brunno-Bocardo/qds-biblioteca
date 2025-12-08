@@ -8,7 +8,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ifsp.biblioteca.dto.EstoqueCreateDto;
 import br.edu.ifsp.biblioteca.factory.EstoqueValidationChainFactory; // Import Novo
-import br.edu.ifsp.biblioteca.handler.ValidationHandler; // Import Novo
 import br.edu.ifsp.biblioteca.model.Estoque;
 import br.edu.ifsp.biblioteca.model.Livro;
 import br.edu.ifsp.biblioteca.repository.EstoqueRepository;
