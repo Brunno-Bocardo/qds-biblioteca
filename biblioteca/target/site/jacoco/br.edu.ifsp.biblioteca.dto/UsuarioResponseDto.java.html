@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioResponseDto.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">biblioteca</a> &gt; <a href="index.source.html" class="el_package">br.edu.ifsp.biblioteca.dto</a> &gt; <span class="el_source">UsuarioResponseDto.java</span></div><h1>UsuarioResponseDto.java</h1><pre class="source lang-java linenums">package br.edu.ifsp.biblioteca.dto;
+
+import br.edu.ifsp.biblioteca.model.CategoriaUsuario;
+import br.edu.ifsp.biblioteca.model.Curso;
+
+public class UsuarioResponseDto extends UsuarioBaseDto {
+	private int idUsuario;
+	public String nome;
+	public String cpf;
+	public String email;
+	private CategoriaUsuario categoria;
+	private Curso curso;
+	public UsuarioResponseDto(int idUsuario, String nome, String cpf, String email, CategoriaUsuario categoria,
+			Curso curso) {
+<span class="nc" id="L15">		super(nome, cpf, email);</span>
+<span class="nc" id="L16">		this.idUsuario = idUsuario;</span>
+<span class="nc" id="L17">		this.categoria = categoria;</span>
+<span class="nc" id="L18">		this.curso = curso;</span>
+<span class="nc" id="L19">	}</span>
+	public UsuarioResponseDto() {
+<span class="nc" id="L21">		super();</span>
+<span class="nc" id="L22">	}</span>
+	public int getIdUsuario() {
+<span class="nc" id="L24">		return idUsuario;</span>
+	}
+	public void setIdUsuario(int idUsuario) {
+<span class="nc" id="L27">		this.idUsuario = idUsuario;</span>
+<span class="nc" id="L28">	}</span>
+
+	public CategoriaUsuario getCategoria() {
+<span class="nc" id="L31">		return categoria;</span>
+	}
+	public void setCategoria(CategoriaUsuario categoria) {
+<span class="nc" id="L34">		this.categoria = categoria;</span>
+<span class="nc" id="L35">	}</span>
+	public Curso getCurso() {
+<span class="nc" id="L37">		return curso;</span>
+	}
+	public void setCurso(Curso curso) {
+<span class="nc" id="L40">		this.curso = curso;</span>
+<span class="nc" id="L41">	}</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

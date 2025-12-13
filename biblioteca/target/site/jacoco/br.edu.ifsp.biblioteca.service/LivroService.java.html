@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LivroService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">biblioteca</a> &gt; <a href="index.source.html" class="el_package">br.edu.ifsp.biblioteca.service</a> &gt; <span class="el_source">LivroService.java</span></div><h1>LivroService.java</h1><pre class="source lang-java linenums">package br.edu.ifsp.biblioteca.service;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import br.edu.ifsp.biblioteca.builder.LivroValidationChainBuilder;
+import br.edu.ifsp.biblioteca.dto.LivroCreateDto;
+import br.edu.ifsp.biblioteca.dto.LivroUpdateDto;
+import br.edu.ifsp.biblioteca.model.CategoriaLivro;
+import br.edu.ifsp.biblioteca.model.Livro;
+import br.edu.ifsp.biblioteca.repository.LivroRepository;
+import jakarta.transaction.Transactional;
+
+import java.util.*;
+
+@Service
+public class LivroService {
+	private final LivroValidationChainBuilder livroValidation;
+	private final LivroRepository livroRepository;
+	private final CategoriaLivroService categoriaLivroService;
+	private final EstoqueService estoqueService;
+
+<span class="nc" id="L24">	public LivroService(LivroRepository livroRepository, CategoriaLivroService categoriaService,</span>
+			LivroValidationChainBuilder livroValidationChain, EstoqueService estoqueService) {
+<span class="nc" id="L26">		this.livroValidation = livroValidationChain;</span>
+<span class="nc" id="L27">		this.livroRepository = livroRepository;</span>
+<span class="nc" id="L28">		this.categoriaLivroService = categoriaService;</span>
+<span class="nc" id="L29">		this.estoqueService = estoqueService;</span>
+<span class="nc" id="L30">	}</span>
+
+	@Transactional
+	public Livro cadastrarLivro(LivroCreateDto livro) {
+<span class="nc" id="L34">		livroValidation.buildLivroChain().handle(livro);</span>
+
+<span class="nc bnc" id="L36" title="All 2 branches missed.">		if (livroRepository.existsByIsbn(livro.getIsbn())) {</span>
+<span class="nc" id="L37">			throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Já existe um livro com este ISBN&quot;);</span>
+		}
+<span class="nc bnc" id="L39" title="All 2 branches missed.">		if (livroRepository.existsByAutorAndEditoraAndEdicao(livro.getAutor(), livro.getEditora(), livro.getEdicao())) {</span>
+<span class="nc" id="L40">			throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Já existe um livro com essas atribuições&quot;);</span>
+		}
+
+<span class="nc" id="L43">		CategoriaLivro categoriaExistente = categoriaLivroService.consultarPorId(livro.getCategoriaId());</span>
+
+<span class="nc" id="L45">		Livro novoLivro = new Livro(livro.getIsbn(), livro.getTitulo(), livro.getAutor(), livro.getEditora(),</span>
+<span class="nc" id="L46">				livro.getEdicao(), categoriaExistente);</span>
+
+<span class="nc" id="L48">		return livroRepository.save(novoLivro);</span>
+	}
+
+	public Livro procurarPorIsbn(String isbn) {
+<span class="nc" id="L52">		livroValidation.buildIsbnChain().handle(isbn);</span>
+<span class="nc" id="L53">		return livroRepository.findByIsbn(isbn).orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND,</span>
+<span class="nc" id="L54">				&quot;Não foi localizado nenhum livro com este ISBN&quot;));</span>
+	}
+
+	public List&lt;Livro&gt; listarLivros() {
+<span class="nc" id="L58">		return livroRepository.findAll();</span>
+	}
+
+	@Transactional
+	public Livro atualizarLivro(String isbn, LivroUpdateDto livroAtualizado) {
+<span class="nc" id="L63">		Livro livro = procurarPorIsbn(isbn);</span>
+
+<span class="nc" id="L65">		if (livroRepository.existsByAutorAndEditoraAndEdicao(livroAtualizado.getAutor(), livroAtualizado.getEditora(),</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">				livroAtualizado.getEdicao())) {</span>
+<span class="nc" id="L67">			throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Já existe um livro com essas atribuições&quot;);</span>
+		}
+
+<span class="nc" id="L70">		CategoriaLivro categoriaLivro = this.categoriaLivroService.consultarPorId(livroAtualizado.getCategoriaId());</span>
+
+<span class="nc" id="L72">		livro.setAutor(livroAtualizado.getAutor());</span>
+<span class="nc" id="L73">		livro.setCategoria(categoriaLivro);</span>
+<span class="nc" id="L74">		livro.setEditora(livroAtualizado.getEditora());</span>
+<span class="nc" id="L75">		livro.setEdicao(livroAtualizado.getEdicao());</span>
+<span class="nc" id="L76">		livro.setTitulo(livroAtualizado.getTitulo());</span>
+
+<span class="nc" id="L78">		return livroRepository.save(livro);</span>
+	}
+
+	@Transactional
+	public void deletar(String isbn) {
+<span class="nc" id="L83">		this.procurarPorIsbn(isbn);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">		if (estoqueService.existeExemplarParaOIsbn(isbn)) {</span>
+<span class="nc" id="L85">			throw new ResponseStatusException(HttpStatus.CONFLICT,</span>
+<span class="nc" id="L86">					&quot;Não é possível deletar um livro que possui exemplares&quot;);</span>
+		}
+<span class="nc" id="L88">		livroRepository.deleteByIsbn(isbn);</span>
+<span class="nc" id="L89">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

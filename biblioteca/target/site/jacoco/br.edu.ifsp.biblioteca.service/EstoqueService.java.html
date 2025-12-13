@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EstoqueService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">biblioteca</a> &gt; <a href="index.source.html" class="el_package">br.edu.ifsp.biblioteca.service</a> &gt; <span class="el_source">EstoqueService.java</span></div><h1>EstoqueService.java</h1><pre class="source lang-java linenums">package br.edu.ifsp.biblioteca.service;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import br.edu.ifsp.biblioteca.builder.EstoqueValidationChainBuilder;
+import br.edu.ifsp.biblioteca.dto.EstoqueCreateDto;
+import br.edu.ifsp.biblioteca.model.Estoque;
+import br.edu.ifsp.biblioteca.model.Livro;
+import br.edu.ifsp.biblioteca.repository.EstoqueRepository;
+import br.edu.ifsp.biblioteca.repository.LivroRepository;
+
+@Service
+public class EstoqueService {
+
+    private final EstoqueRepository estoqueRepository;
+    private final LivroRepository livroRepository;
+    private final EstoqueValidationChainBuilder estoqueValidation; 
+
+<span class="nc" id="L23">    public EstoqueService(EstoqueRepository estoqueRepository, LivroRepository livroRepository, EstoqueValidationChainBuilder estoqueValidation) {</span>
+<span class="nc" id="L24">        this.estoqueRepository = estoqueRepository;</span>
+<span class="nc" id="L25">        this.livroRepository = livroRepository;</span>
+<span class="nc" id="L26">        this.estoqueValidation = estoqueValidation;</span>
+<span class="nc" id="L27">    }</span>
+
+    public Estoque cadastrarExemplar(EstoqueCreateDto createDto) {
+<span class="nc" id="L30">        estoqueValidation.buildEstoqueChain().handle(createDto);</span>
+
+<span class="nc" id="L32">        Livro livro = livroRepository.findByIsbn(createDto.getIsbn())</span>
+<span class="nc" id="L33">                .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Livro não encontrado para o ISBN informado&quot;));</span>
+        
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (estoqueRepository.findByCodigoExemplar(createDto.getCodigoExemplar()).isPresent()) {</span>
+<span class="nc" id="L36">            throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Já existe um exemplar com este código&quot;);</span>
+        }
+
+<span class="nc" id="L39">        Estoque estoque = new Estoque();</span>
+<span class="nc" id="L40">        estoque.setLivro(livro);</span>
+<span class="nc" id="L41">        estoque.setCodigoExemplar(createDto.getCodigoExemplar());</span>
+<span class="nc" id="L42">        estoque.setDisponivel(true);</span>
+
+<span class="nc" id="L44">        return estoqueRepository.save(estoque);</span>
+    }
+    
+    public List&lt;Estoque&gt; listarExemplares() {
+<span class="nc" id="L48">        return estoqueRepository.findAll();</span>
+    }
+
+    public Estoque buscarPorCodigo(String codigoExemplar) {
+<span class="nc" id="L52">        return estoqueRepository.findByCodigoExemplar(codigoExemplar).orElseThrow(()-&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Não foi possível localizar exemplar.&quot;));</span>
+    }
+
+    public Estoque atualizarDisponibilidade(String codigoExemplar, boolean disponivel) {
+<span class="nc" id="L56">        Estoque estoque = estoqueRepository.findByCodigoExemplar(codigoExemplar)</span>
+<span class="nc" id="L57">                .orElseThrow(() -&gt; new RuntimeException(&quot;Exemplar não encontrado&quot;));</span>
+
+<span class="nc" id="L59">        estoque.setDisponivel(disponivel);</span>
+<span class="nc" id="L60">        return estoqueRepository.save(estoque);</span>
+    }
+    
+    public void removerExemplar(String codigoExemplar) {
+<span class="nc" id="L64">        Estoque estoque = estoqueRepository.findByCodigoExemplar(codigoExemplar)</span>
+<span class="nc" id="L65">                .orElseThrow(() -&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;Exemplar não encontrado&quot;));</span>
+
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (!estoque.isDisponivel()) {</span>
+<span class="nc" id="L68">            throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Exemplar não pode ser removido pois está emprestado&quot;);</span>
+        }
+
+<span class="nc" id="L71">        estoqueRepository.delete(estoque);</span>
+<span class="nc" id="L72">    }</span>
+
+    public boolean existeExemplarParaOIsbn(String isbn) {
+<span class="nc" id="L75">        return estoqueRepository.existsByLivroIsbn(isbn);</span>
+    }
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

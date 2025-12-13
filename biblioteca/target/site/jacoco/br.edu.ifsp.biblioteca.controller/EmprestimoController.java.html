@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EmprestimoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">biblioteca</a> &gt; <a href="index.source.html" class="el_package">br.edu.ifsp.biblioteca.controller</a> &gt; <span class="el_source">EmprestimoController.java</span></div><h1>EmprestimoController.java</h1><pre class="source lang-java linenums">package br.edu.ifsp.biblioteca.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import br.edu.ifsp.biblioteca.dto.EmprestimoCreateDto;
+import br.edu.ifsp.biblioteca.model.Emprestimo;
+import br.edu.ifsp.biblioteca.service.EmprestimoService;
+
+
+@RestController
+@Validated
+@RequestMapping(&quot;/library/emprestimo&quot;)
+
+public class EmprestimoController {
+	
+	private final EmprestimoService emprestimoService;
+	
+<span class="nc" id="L23">	public EmprestimoController(EmprestimoService serviceEmprestimo) {</span>
+<span class="nc" id="L24">		this.emprestimoService = serviceEmprestimo;</span>
+<span class="nc" id="L25">	}</span>
+	
+	@PostMapping
+	public ResponseEntity&lt;Emprestimo&gt; registrarEmprestimo(@RequestBody EmprestimoCreateDto emprestimo) {
+<span class="nc" id="L29">		Emprestimo emprestimoCriado = emprestimoService.registrarEmprestimo(emprestimo);</span>
+<span class="nc" id="L30">		return ResponseEntity.status(HttpStatus.OK).body(emprestimoCriado);</span>
+	}
+	
+	@GetMapping
+	public ResponseEntity&lt;List&lt;Emprestimo&gt;&gt; exibirEmprestimos() {
+<span class="nc" id="L35">		return ResponseEntity.status(HttpStatus.OK).body(emprestimoService.listarEmprestimos());</span>
+	}
+	
+	@PutMapping(value = &quot;/{id}/devolucao&quot;)
+	public ResponseEntity&lt;Emprestimo&gt; registrarDevolucaoEmprestimo(@PathVariable int id){
+<span class="nc" id="L40">		Emprestimo emprestimoAtualizado = emprestimoService.registrarDevolucaoEmprestimo(id);</span>
+<span class="nc" id="L41">		return ResponseEntity.status(HttpStatus.OK).body(emprestimoAtualizado);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>
