@@ -60,7 +60,9 @@ public class EmprestimoService {
         int maxLoans = strategy.maxAllowedActiveLoans(usuario);
 
         if (activeLoans >= maxLoans) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário atingiu o limite de empréstimos");
+            String categoria = usuario.getCategoria() != null ? usuario.getCategoria().getNomeCategoriaUsuario() : "Usuário";
+            String errorMessage = String.format("%s já possui %d empréstimos ativos. Limite permitido: %d", categoria, activeLoans, maxLoans);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
         }
 
         LocalDate loanDate = LocalDate.now();
@@ -72,6 +74,7 @@ public class EmprestimoService {
         novoEmprestimo.setStatus(StatusEmprestimo.ATIVO);
         novoEmprestimo.setDataEmprestimo(loanDate);
         novoEmprestimo.setDataPrevistaDevolucao(dueDate);
+        estoque.setDisponivel(false);
 
         return emprestimoRepository.save(novoEmprestimo);
     }
@@ -106,6 +109,10 @@ public class EmprestimoService {
                 LocalDate dataDeSuspensao = dataDevolucao.plusDays(diasDeAtraso * 3);
                 emprestimo.setDataSuspensao(dataDeSuspensao);
             }
+        }
+        Estoque estoque = emprestimo.getEstoque();
+        if (estoque != null) {
+            estoque.setDisponivel(true);
         }
 
         return emprestimo;
