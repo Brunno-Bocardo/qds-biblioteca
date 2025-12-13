@@ -37,13 +37,13 @@ public class UsuarioController {
     
     @GetMapping(value = &quot;/{cpf}&quot;)
 	public ResponseEntity&lt;Usuario&gt; exibirUsuarioPorCpf(@PathVariable String cpf){
-<span class="nc" id="L40">		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.procurarPorCpf(cpf));</span>
+<span class="fc" id="L40">		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.procurarPorCpf(cpf));</span>
 	}
 
     @PutMapping(value = &quot;/{cpf}&quot;)
 	public ResponseEntity&lt;Usuario&gt; atualizarUsuario(@PathVariable String cpf, @RequestBody UsuarioCreateDto usuario){
-<span class="nc" id="L45">    	Usuario usuarioAtualizado = usuarioService.atualizarUsuario(cpf, usuario);</span>
-<span class="nc" id="L46">	    return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizado);</span>
+<span class="fc" id="L45">    	Usuario usuarioAtualizado = usuarioService.atualizarUsuario(cpf, usuario);</span>
+<span class="fc" id="L46">	    return ResponseEntity.status(HttpStatus.OK).body(usuarioAtualizado);</span>
 	}
     
     @DeleteMapping(&quot;/{cpf}&quot;)

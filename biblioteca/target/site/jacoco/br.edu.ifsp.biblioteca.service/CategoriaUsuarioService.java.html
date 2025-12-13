@@ -15,27 +15,27 @@ public class CategoriaUsuarioService {
 	
 	private final CategoriaUsuarioRepository categoriaUsuarioRepository;
 	
-<span class="nc" id="L18">	public CategoriaUsuarioService(CategoriaUsuarioRepository categoriaRepository) {</span>
-<span class="nc" id="L19">		this.categoriaUsuarioRepository = categoriaRepository;</span>
-<span class="nc" id="L20">	}</span>
+<span class="fc" id="L18">	public CategoriaUsuarioService(CategoriaUsuarioRepository categoriaRepository) {</span>
+<span class="fc" id="L19">		this.categoriaUsuarioRepository = categoriaRepository;</span>
+<span class="fc" id="L20">	}</span>
 	
 	@Transactional
 	public CategoriaUsuario cadastrarCategoriaUsuario(CategoriaUsuario categoriaUsuario) {
-<span class="nc bnc" id="L24" title="All 2 branches missed.">		if(categoriaUsuarioRepository.existsByNomeCategoriaUsuario(categoriaUsuario.getNomeCategoriaUsuario())) {</span>
-<span class="nc" id="L25">			throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Já existe uma categoria usuário com este nome&quot;);</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">		if(categoriaUsuarioRepository.existsByNomeCategoriaUsuario(categoriaUsuario.getNomeCategoriaUsuario())) {</span>
+<span class="fc" id="L25">			throw new ResponseStatusException(HttpStatus.CONFLICT, &quot;Já existe uma categoria usuário com este nome&quot;);</span>
 		}
-<span class="nc" id="L27">		return categoriaUsuarioRepository.save(categoriaUsuario);</span>
+<span class="fc" id="L27">		return categoriaUsuarioRepository.save(categoriaUsuario);</span>
 	}
 	public CategoriaUsuario consultarPorNome(String categoria) {
-<span class="nc" id="L30">		return categoriaUsuarioRepository.findByNomeCategoriaUsuario(categoria).orElseThrow(()-&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;A categoria informada não consta no sistema&quot;));</span>
+<span class="fc" id="L30">		return categoriaUsuarioRepository.findByNomeCategoriaUsuario(categoria).orElseThrow(()-&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;A categoria informada não consta no sistema&quot;));</span>
 	}
 	
 	public CategoriaUsuario consultarPorId(Integer categoria) {
-<span class="nc" id="L34">		return categoriaUsuarioRepository.findById(categoria).orElseThrow(()-&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;A categoria informada não consta no sistema&quot;));</span>
+<span class="fc" id="L34">		return categoriaUsuarioRepository.findById(categoria).orElseThrow(()-&gt; new ResponseStatusException(HttpStatus.NOT_FOUND, &quot;A categoria informada não consta no sistema&quot;));</span>
 	}
 	
 	public List&lt;CategoriaUsuario&gt; listarTodas() {
-<span class="nc" id="L38">		return categoriaUsuarioRepository.findAll();</span>
+<span class="fc" id="L38">		return categoriaUsuarioRepository.findAll();</span>
 	}
 
 }
