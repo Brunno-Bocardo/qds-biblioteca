@@ -39,25 +39,25 @@ public class EmprestimoControllerTest {
 	@Autowired
     private ObjectMapper objectMapper;
 	 
-//	 @Test
-//	 void deveRegistrarEmprestimo() throws Exception {
-//
-//	     EmprestimoCreateDto dto = EmprestimoCreateDto.builder()
-//	             .cpf("12345")
-//	             .codigoExemplar("12345")
-//	             .build();
-//
-//	     Emprestimo emprestimo = new Emprestimo();
-//
-//	     when(emprestimoService.registrarEmprestimo(any(EmprestimoCreateDto.class)))
-//	             .thenReturn(emprestimo);
-//
-//	     mockMvc.perform(post("/library/emprestimo")
-//	             .contentType(MediaType.APPLICATION_JSON)
-//	             .content(objectMapper.writeValueAsString(dto)))
-//	             .andExpect(status().isOk())
-//	             .andExpect(jsonPath("$").exists());
-//	 }
+	@Test
+	void deveRegistrarEmprestimo() throws Exception {
+
+		EmprestimoCreateDto dto = EmprestimoCreateDto.builder()
+				.cpf("12345")
+				.codigoExemplar("12345")
+				.build();
+
+		Emprestimo emprestimo = new Emprestimo();
+
+		when(emprestimoService.registrarEmprestimo(any(EmprestimoCreateDto.class)))
+				.thenReturn(emprestimo);
+
+		mockMvc.perform(post("/library/emprestimo")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$").exists());
+	}
 	 
 	 @Test
 	 void deveRetornarListaDeEmprestimos() throws Exception {
