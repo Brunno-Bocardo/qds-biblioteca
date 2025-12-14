@@ -73,8 +73,5 @@ class CategoriaUsuarioControllerTest {
         assertEquals(5, response.getBody().getIdCategoriaUsuario());
         assertEquals("aluno", response.getBody().getNomeCategoriaUsuarioo());
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> testes-unitarios
+

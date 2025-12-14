@@ -337,8 +337,4 @@ public class UsuarioServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, resultado.getStatusCode());
         assertTrue(resultado.getReason().contains("Usuário não encontrado."));
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> testes-unitarios

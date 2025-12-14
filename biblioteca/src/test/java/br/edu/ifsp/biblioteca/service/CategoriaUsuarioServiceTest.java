@@ -94,8 +94,4 @@ class CategoriaUsuarioServiceTest {
         assertTrue(categorias.contains(categoria1));
         assertTrue(categorias.contains(categoria2));
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> testes-unitarios
