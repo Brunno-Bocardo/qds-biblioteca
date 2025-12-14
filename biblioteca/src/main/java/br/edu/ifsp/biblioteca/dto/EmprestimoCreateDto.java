@@ -1,10 +1,15 @@
 package br.edu.ifsp.biblioteca.dto;
 
+import lombok.Builder;
+
+@Builder
 public class EmprestimoCreateDto {
 	private String cpf;
 	private String codigoExemplar;
 	
-	EmprestimoCreateDto(String cpf, String codigoExemplar){
+	public EmprestimoCreateDto(){}
+	
+	public EmprestimoCreateDto(String cpf, String codigoExemplar){
 		this.cpf = cpf;
 		this.codigoExemplar = codigoExemplar;
 	}

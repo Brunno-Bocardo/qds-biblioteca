@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: br.edu.ifsp.biblioteca.controller.UsuarioControllerTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.416 s -- in br.edu.ifsp.biblioteca.controller.UsuarioControllerTest
