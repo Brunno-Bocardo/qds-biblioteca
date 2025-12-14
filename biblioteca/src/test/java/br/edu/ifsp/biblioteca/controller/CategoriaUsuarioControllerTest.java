@@ -74,3 +74,4 @@ class CategoriaUsuarioControllerTest {
         assertEquals("aluno", response.getBody().getNomeCategoriaUsuarioo());
     }
 }
+
