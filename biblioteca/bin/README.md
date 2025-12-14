@@ -1,27 +1,16 @@
-# Spring Demo - Qualidade de Software
-
-**Disciplina:** Qualidade de Software  
-**Professor:** Anisio Silva  
-**E-mail:** [anisio.silva@ifsp.du.br](mailto:anisio.silva@ifsp.du.br)
+# Biblioteca - Qualidade de Software
 
 ---
 
 ## 1. Descrição
 
-Projeto de revisão de conceitos de **Spring Boot** utilizando **H2 Database em memória**.  
-Contém um **CRUD de carros, clientes e vendas**, com relacionamentos entre entidades, endpoints REST e documentação via Swagger.
-
-O código foi propositalmente escrito de forma confusa para prática de **refatoração e aplicação de Clean Code**.
+...
 
 ---
 
 ## 2. Funcionalidades
 
-* CRUD de **Carros**  
-* CRUD de **Clientes**  
-* Registro de **Vendas** (relacionando Carros e Clientes)  
-* Banco **H2** em memória  
-* Documentação **Swagger/OpenAPI**
+...
 
 ---
 
@@ -30,7 +19,7 @@ O código foi propositalmente escrito de forma confusa para prática de **refato
 * Java 17+  
 * Spring Boot 3+  
 * Spring Data JPA  
-* H2 Database (em memória)  
+* H2 Database  
 * Swagger/OpenAPI  
 * Maven
 
@@ -44,7 +33,7 @@ O código foi propositalmente escrito de forma confusa para prática de **refato
 * **H2 Console:**  
   [http://localhost:8080/demo/v1/h2-console/login.do](http://localhost:8080/demo/v1/h2-console/login.do)  
 
-  * **JDBC URL:** `jdbc:h2:mem:carrosDB`  
+  * **JDBC URL:** `jdbc:h2:file:~/bibliotecaDB`  
   * **Usuário:** `sa`  
   * **Senha:** (deixe em branco)
 
@@ -62,7 +51,7 @@ O código foi propositalmente escrito de forma confusa para prática de **refato
 3.  Teste os endpoints via **Swagger UI** ou usando ferramentas como **Postman** ou **curl**.
 4.  Para acessar o **H2 Console** (banco de dados em memória):
     *   **URL:** [http://localhost:8080/demo/v1/h2-console](http://localhost:8080/demo/v1/h2-console)
-    *   **JDBC URL:** `jdbc:h2:mem:carrosDB`
+    *   **JDBC URL:** `jdbc:h2:file:~/bibliotecaDB`
     *   **Usuário:** `sa`
     *   **Senha:** *(deixe em branco)*
 

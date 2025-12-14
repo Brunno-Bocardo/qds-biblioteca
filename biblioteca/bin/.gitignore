@@ -1,0 +1,11 @@
+# Maven / Java
+target/
+*.log
+
+# IDE
+.classpath
+.project
+.settings/
+.factorypath
+
+

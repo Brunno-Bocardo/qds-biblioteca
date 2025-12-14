@@ -59,4 +59,31 @@ public class UsuarioControllerTest {
         assertNotNull(response.getBody());
         assertEquals("Usuário deletado!", response.getBody().get("message"));
     }
+
+    @Test
+    void testExibirUsuarioPorCpfSucesso() {
+        String cpf = "12345678900";
+        Usuario usuario = new Usuario();
+        Mockito.when(usuarioService.procurarPorCpf(cpf)).thenReturn(usuario);
+        ResponseEntity<Usuario> response = usuarioController.exibirUsuarioPorCpf(cpf);
+
+        Mockito.verify(usuarioService).procurarPorCpf(cpf);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(usuario, response.getBody());
+    }
+
+    @Test
+    void testAtualizarUsuarioSucesso() {
+        String cpf = "12345678900";
+        UsuarioCreateDto inputDto = new UsuarioCreateDto();
+        Usuario usuarioAtualizado = new Usuario();
+        Mockito.when(usuarioService.atualizarUsuario(cpf, inputDto)).thenReturn(usuarioAtualizado);
+        ResponseEntity<Usuario> response = usuarioController.atualizarUsuario(cpf, inputDto);
+
+        Mockito.verify(usuarioService).atualizarUsuario(cpf, inputDto);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(usuarioAtualizado, response.getBody());
+    }
 }
