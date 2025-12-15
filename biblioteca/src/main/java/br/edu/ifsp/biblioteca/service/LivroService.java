@@ -59,7 +59,8 @@ public class LivroService {
 	}
 
 	@Transactional
-	public Livro atualizarLivro(String isbn, LivroUpdateDto livroAtualizado) {
+	public Livro atualizarLivro(String isbn, LivroCreateDto livroAtualizado) {
+		livroValidation.buildLivroChain().handle(livroAtualizado);
 		Livro livro = procurarPorIsbn(isbn);
 
 		if (livroRepository.existsByAutorAndEditoraAndEdicao(livroAtualizado.getAutor(), livroAtualizado.getEditora(),

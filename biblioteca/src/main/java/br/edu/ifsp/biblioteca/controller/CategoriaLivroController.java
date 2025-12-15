@@ -19,12 +19,12 @@ public class CategoriaLivroController {
         this.categoriaLivroService = categoriaLivroService;
     }
 
-
     @PostMapping
     public ResponseEntity<CategoriaLivroDto> criar(String nome) {
         CategoriaLivro novaCategoria = new CategoriaLivro(null, nome);
         CategoriaLivro categoriaSalva = categoriaLivroService.cadastrar(novaCategoria);
-        CategoriaLivroDto respostaDto = new CategoriaLivroDto(categoriaSalva.getIdCategoriaLivro(), categoriaSalva.getNomeCategoriaLivro());
+        CategoriaLivroDto respostaDto = new CategoriaLivroDto(categoriaSalva.getIdCategoriaLivro(),
+                categoriaSalva.getNomeCategoriaLivro());
         return ResponseEntity.status(HttpStatus.CREATED).body(respostaDto);
     }
 
@@ -32,15 +32,17 @@ public class CategoriaLivroController {
     public ResponseEntity<List<CategoriaLivroDto>> listarTodos() {
         List<CategoriaLivro> categorias = categoriaLivroService.listarTodas();
         List<CategoriaLivroDto> categoriasDto = categorias.stream()
-                .map(categoria -> new CategoriaLivroDto(categoria.getIdCategoriaLivro(), categoria.getNomeCategoriaLivro()))
+                .map(categoria -> new CategoriaLivroDto(categoria.getIdCategoriaLivro(),
+                        categoria.getNomeCategoriaLivro()))
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(categoriasDto);
     }
 
     @GetMapping("/{nome}")
     public ResponseEntity<CategoriaLivroDto> consultarPorNome(@PathVariable String nome) {
-    	CategoriaLivro categoriaEncontrada = categoriaLivroService.consultarPorNome(nome);
-    	CategoriaLivroDto categoriaDto = new CategoriaLivroDto(categoriaEncontrada.getIdCategoriaLivro(),categoriaEncontrada.getNomeCategoriaLivro());
+        CategoriaLivro categoriaEncontrada = categoriaLivroService.consultarPorNome(nome);
+        CategoriaLivroDto categoriaDto = new CategoriaLivroDto(categoriaEncontrada.getIdCategoriaLivro(),
+                categoriaEncontrada.getNomeCategoriaLivro());
         return ResponseEntity.status(HttpStatus.OK).body(categoriaDto);
     }
 }
