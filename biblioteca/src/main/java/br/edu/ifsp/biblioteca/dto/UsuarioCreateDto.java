@@ -1,5 +1,8 @@
 package br.edu.ifsp.biblioteca.dto;
 
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder
 public class UsuarioCreateDto extends UsuarioBaseDto {
 	private Integer categoriaId;
 	private Integer cursoId;

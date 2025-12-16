@@ -1,5 +1,8 @@
 package br.edu.ifsp.biblioteca.dto;
 
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder
 public abstract class UsuarioBaseDto {
 	public String nome;
 	public String cpf;

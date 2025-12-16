@@ -26,7 +26,7 @@ public class CpfHandler<T> extends BaseHandler<T>{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF é obrigatório");
         }
 		
-		if (cpf == null || !cpf.matches("^(?!([0-9])\\1{10})\\d{11}$")) {
+		if (!cpf.matches("^(?!([0-9])\\1{10})\\d{11}$")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF inválido. Ele deve conter 11 dígitos e não pode ser uma repetição.");
         }
 		
