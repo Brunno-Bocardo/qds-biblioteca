@@ -1,9 +1,8 @@
 package br.edu.ifsp.biblioteca.handler;
-
 import java.util.function.Function;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
 
 public class CpfHandler<T> extends BaseHandler<T>{
 

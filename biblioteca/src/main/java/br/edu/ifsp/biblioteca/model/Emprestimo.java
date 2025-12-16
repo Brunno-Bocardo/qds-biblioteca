@@ -91,6 +91,10 @@ public class Emprestimo {
 		return dataSuspensao;
 	}
 	
+	public StatusEmprestimo getStatus() {
+		return status;
+	}
+	
 	public void setStatus(StatusEmprestimo status) {
 		this.status = status;
 	}
@@ -99,6 +103,7 @@ public class Emprestimo {
     //                     enum auxiliar
     // ====================================================
 	
+
 	public enum StatusEmprestimo {
 	    ATIVO,  
 	    DEVOLVIDO,  

@@ -10,6 +10,7 @@ import br.edu.ifsp.biblioteca.handler.ValidationHandler;
 
 @Component
 public class EmprestimoValidationChainBuilder {
+	public EmprestimoValidationChainBuilder() {}
 	public ValidationHandler<EmprestimoCreateDto> buildEmprestimoChain() {
 		ExemplarHandler<EmprestimoCreateDto> handleExemplar = new ExemplarHandler<>(
 				EmprestimoCreateDto::getCodigoExemplar);
