@@ -1,5 +1,8 @@
 package br.edu.ifsp.biblioteca.dto;
 
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder
 public abstract class EstoqueBaseDto {
 	private String codigoExemplar;
 

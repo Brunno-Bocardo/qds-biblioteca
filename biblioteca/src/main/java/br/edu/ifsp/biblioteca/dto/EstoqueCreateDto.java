@@ -1,5 +1,8 @@
 package br.edu.ifsp.biblioteca.dto;
 
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder
 public class EstoqueCreateDto extends EstoqueBaseDto {
 	private String isbn;
 	

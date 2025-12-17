@@ -1,5 +1,8 @@
 package br.edu.ifsp.biblioteca.dto;
 
+import lombok.experimental.SuperBuilder;
+
+@SuperBuilder
 public class LivroCreateDto extends LivroBaseDto {
 	private String isbn;
 	private Integer categoriaId;

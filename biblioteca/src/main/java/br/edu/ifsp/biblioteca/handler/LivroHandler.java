@@ -16,13 +16,13 @@ public class LivroHandler extends BaseHandler<LivroCreateDto> {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O autor é obrigatório");
         }
         if (livroDto.getEditora() == null || livroDto.getEditora().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O editora é obrigatório");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A editora é obrigatória");
         }
         if (livroDto.getEdicao() == null || livroDto.getEdicao().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O edição é obrigatório");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A edição é obrigatória");
         }
-        if (livroDto.getCategoriaId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O categoria é obrigatório");
+        if (livroDto.getCategoriaId() == null || livroDto.getCategoriaId() == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A categoria é obrigatória");
         }
         super.handle(livroDto);
     }
